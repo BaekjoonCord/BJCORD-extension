@@ -1,17 +1,32 @@
 {
-    "manifest_version": 3,
-    "name": "백준허브(BaekjoonHub)",
-    "description": "Automatically send BOJ to your discord server",
-    "homepage_url": "https://github.com/boj-to-discord/boj-to-discord",
-    "version": "1.0",
-    "author": "karpitony",
-    "action": {
-        "default_icon": "assets/thumbnail.png",
-        "default_popup": "popup/popup.html"
-    },
-    "icons": {
-        "16": "assets/thumbnail.png",
-        "48": "assets/thumbnail.png",
-        "128": "assets/thumbnail.png"
+  "manifest_version": 3,
+  "name": "백준코드",
+  "description": "Automatically send BOJ to your discord server",
+  "homepage_url": "https://github.com/boj-to-discord/boj-to-discord",
+  "version": "1.0",
+  "author": "karpitony, YEAHx4",
+  "action": {
+    "default_icon": "assets/thumbnail.png",
+    "default_popup": "popup/popup.html"
+  },
+  "icons": {
+    "16": "assets/thumbnail.png",
+    "48": "assets/thumbnail.png",
+    "128": "assets/thumbnail.png"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "scripts/content/variables.js",
+        "scripts/content/lib.js",
+        "scripts/content/boj.js"
+      ],
+      "matches": ["https://www.acmicpc.net/status?*"]
     }
+  ],
+  "background": {
+    "service_worker": "scripts/service/serviceWorker.js"
+  },
+  "host_permissions": ["https://solved.ac/api/v3/*"],
+  "permissions": ["storage", "activeTab", "scripting"]
 }

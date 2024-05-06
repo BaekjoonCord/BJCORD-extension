@@ -1,0 +1,9 @@
+body {
+  width: 400px;
+  height: 800px;
+}
+
+.main-title {
+  text-align: center;
+  user-select: none;
+}
