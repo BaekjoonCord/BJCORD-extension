@@ -258,6 +258,13 @@ async function getWebhookMessage(
           name: `${handle}`,
           url: `https://solved.ac/profile/${handle}`,
         },
+        thumbnail: {
+          url: `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/${bj_level[
+            solved.level
+          ]
+            .replace(" ", "")
+            .toLowerCase()}.png`,
+        },
       },
     ],
     username: "BJCORD",
