@@ -28,12 +28,13 @@ function watch() {
       const { username, resultCategory } = data;
 
       if (username == getHandle()) {
-        if (
-          resultCategory == "judging" ||
-          resultCategory == "compile" ||
-          resultCategory == "wait"
-        )
-          return;
+        // if (
+        //   resultCategory == "judging" ||
+        //   resultCategory == "compile" ||
+        //   resultCategory == "wait"
+        // )
+        //   return;
+        if (resultCategory != "ac") return;
 
         const time = getTimeDifference(data.submissionTime);
         if (time > 120) return;
