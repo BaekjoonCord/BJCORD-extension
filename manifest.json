@@ -16,7 +16,11 @@
   },
   "content_scripts": [
     {
-      "js": ["scripts/content/boj.js"],
+      "js": [
+        "scripts/content/variables.js",
+        "scripts/content/lib.js",
+        "scripts/content/boj.js"
+      ],
       "matches": ["https://www.acmicpc.net/status?*"]
     }
   ]
