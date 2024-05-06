@@ -34,6 +34,34 @@ function logErr(text) {
   console.error("[BJCORD]", text);
 }
 
+function unescapeHtml(text) {
+  const unescaped = {
+    "&amp;": "&",
+    "&#38;": "&",
+    "&lt;": "<",
+    "&#60;": "<",
+    "&gt;": ">",
+    "&#62;": ">",
+    "&apos;": "'",
+    "&#39;": "'",
+    "&quot;": '"',
+    "&#34;": '"',
+    "&nbsp;": " ",
+    "&#160;": " ",
+  };
+  return text.replace(
+    /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160);/g,
+    function (m) {
+      return unescaped[m];
+    }
+  );
+}
+
+/** 문자열을 unescape 하여 반환합니다. */
+String.prototype.unescapeHtml = function () {
+  return unescapeHtml(this);
+};
+
 function getResultTable() {
   const table = document.getElementById("status-table");
 
@@ -74,7 +102,7 @@ function getResultTable() {
   };
 
   const headers = Array.from(table.rows[0].cells).map((x) =>
-    x.innerText.trim()
+    mapTableHeader(x.innerText.trim())
   );
 
   const list = [];
@@ -100,7 +128,9 @@ function getResultTable() {
           const idElement = x.querySelector("a.problem_title");
           if (!idElement) return null;
           return {
-            problemId: a.getAttribute("href").replace(/^.*\/([0-9]+)$/, "$1"),
+            problemId: idElement
+              .getAttribute("href")
+              .replace(/^.*\/([0-9]+)$/, "$1"),
           };
         default:
           return x.innerText.trim();
@@ -116,4 +146,38 @@ function getResultTable() {
   }
 
   return list;
+}
+function getTimeDifference(timestamp) {
+  const monthNames = {
+    "1월": "January",
+    "2월": "February",
+    "3월": "March",
+    "4월": "April",
+    "5월": "May",
+    "6월": "June",
+    "7월": "July",
+    "8월": "August",
+    "9월": "September",
+    "10월": "October",
+    "11월": "November",
+    "12월": "December",
+  };
+  for (let month in monthNames) {
+    if (timestamp.includes(month)) {
+      timestamp = timestamp.replace(month, monthNames[month]);
+    }
+  }
+
+  timestamp = timestamp
+    .replace("년", ", ")
+    .replace("일", ",")
+    .replace(":", ":");
+
+  const timestampDate = new Date(Date.parse(timestamp));
+
+  const now = new Date();
+  const difference = now.getTime() - timestampDate.getTime();
+  const differenceInSeconds = Math.floor(difference / 1000);
+
+  return differenceInSeconds;
 }
