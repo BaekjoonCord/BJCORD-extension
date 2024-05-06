@@ -1,2 +1,2 @@
-console.log("BOJ status page detected!");
-console.log("Current user: " + getHandle());
+log("BOJ status page detected!");
+log("Current user: " + getHandle());
