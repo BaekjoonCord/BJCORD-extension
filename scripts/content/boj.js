@@ -43,21 +43,23 @@ function watch() {
         log(data);
         log("Sending message to Discord...");
 
-        const msg = getWebhookMessage(
-          getHandle(),
-          data.submissionId,
-          data.problemId,
-          data.language,
-          data.memory,
-          data.resultCategory,
-          data.runtime,
-          data.codeLength,
-          data.result
-        );
-        sendMessage(
-          msg,
-          "https://discord.com/api/webhooks/1236995046964727869/r5bHZKznebAt1TFeaHQZ3ATenc_zT_Xr9QFCtCycMxFw-4CUXOAK8JQi15aAZUOGlOUu"
-        );
+        (async () => {
+          const msg = await getWebhookMessage(
+            getHandle(),
+            data.submissionId,
+            data.problemId,
+            data.language,
+            data.memory,
+            data.resultCategory,
+            data.runtime,
+            data.codeLength,
+            data.result
+          );
+          sendMessage(
+            msg,
+            "https://discord.com/api/webhooks/1236995046964727869/r5bHZKznebAt1TFeaHQZ3ATenc_zT_Xr9QFCtCycMxFw-4CUXOAK8JQi15aAZUOGlOUu"
+          );
+        })();
       }
     }
   }, 1000);

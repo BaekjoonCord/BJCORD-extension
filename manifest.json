@@ -23,5 +23,10 @@
       ],
       "matches": ["https://www.acmicpc.net/status?*"]
     }
-  ]
+  ],
+  "background": {
+    "service_worker": "scripts/service/serviceWorker.js"
+  },
+  "host_permissions": ["https://solved.ac/api/v3/*"],
+  "permissions": ["storage", "activeTab", "scripting"]
 }

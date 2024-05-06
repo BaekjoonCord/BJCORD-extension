@@ -147,6 +147,7 @@ function getResultTable() {
 
   return list;
 }
+
 function getTimeDifference(timestamp) {
   const monthNames = {
     "1월": "January",
@@ -182,7 +183,7 @@ function getTimeDifference(timestamp) {
   return differenceInSeconds;
 }
 
-function getWebhookMessage(
+async function getWebhookMessage(
   handle,
   submissionId,
   problemId,
@@ -193,22 +194,20 @@ function getWebhookMessage(
   length,
   resultText
 ) {
+  const solved = await getProblemData(problemId);
+  console.log(solved);
+
   return {
     content: null,
     embeds: [
       {
-        title: `#${submissionId} ${result.toUpperCase()}`,
+        title: `#${problemId}: ${solved.titleKo}`,
         url: `https://www.acmicpc.net/problem/${problemId}`,
         color: getColor(result),
         fields: [
           {
-            name: "문제",
-            value: `[${problemId} : 이름](https://www.acmicpc.net/problem/${problemId})`,
-            inline: true,
-          },
-          {
             name: "난이도",
-            value: `Platinum IV`,
+            value: bj_level[solved.level],
             inline: true,
           },
           {
@@ -217,8 +216,9 @@ function getWebhookMessage(
             inline: true,
           },
           {
-            name: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
-            value: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
+            name: "결과",
+            value: `${resultText}`,
+            inline: true,
           },
           {
             name: "메모리",
@@ -238,15 +238,6 @@ function getWebhookMessage(
           {
             name: "코드 길이",
             value: `${length} B`,
-            inline: true,
-          },
-          {
-            name: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
-            value: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
-          },
-          {
-            name: "결과",
-            value: `${resultText}`,
             inline: true,
           },
         ],
@@ -312,3 +303,11 @@ const getColor = (result) => {
       return 0x000000;
   }
 };
+
+async function getProblemData(id) {
+  return chrome.runtime.sendMessage({
+    sender: "boj",
+    task: "solvedProblemFetch",
+    problemId: id,
+  });
+}
