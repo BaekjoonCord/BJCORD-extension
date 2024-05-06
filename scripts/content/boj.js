@@ -28,7 +28,12 @@ function watch() {
       const { username, resultCategory } = data;
 
       if (username == getHandle()) {
-        if (resultCategory == "judging" || resultCategory == "compile") return;
+        if (
+          resultCategory == "judging" ||
+          resultCategory == "compile" ||
+          resultCategory == "wait"
+        )
+          return;
 
         const time = getTimeDifference(data.submissionTime);
         if (time > 120) return;
@@ -46,7 +51,8 @@ function watch() {
           data.memory,
           data.resultCategory,
           data.runtime,
-          data.codeLength
+          data.codeLength,
+          data.result
         );
         sendMessage(
           msg,

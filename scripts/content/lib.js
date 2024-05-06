@@ -190,7 +190,8 @@ function getWebhookMessage(
   memory,
   result,
   runtime,
-  length
+  length,
+  resultText
 ) {
   return {
     content: null,
@@ -198,7 +199,7 @@ function getWebhookMessage(
       {
         title: `#${submissionId} ${result.toUpperCase()}`,
         url: `https://www.acmicpc.net/problem/${problemId}`,
-        color: 5963533,
+        color: getColor(result),
         fields: [
           {
             name: "문제",
@@ -239,6 +240,15 @@ function getWebhookMessage(
             value: `${length} B`,
             inline: true,
           },
+          {
+            name: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
+            value: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
+          },
+          {
+            name: "결과",
+            value: `${resultText}`,
+            inline: true,
+          },
         ],
         author: {
           name: `${handle}`,
@@ -253,22 +263,52 @@ function getWebhookMessage(
   };
 }
 
-function sendMessage(message, url) {
-  return new Promise((resolve, reject) => {
-    fetch(url, {
+async function sendMessage(message, url) {
+  try {
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(message),
-    })
-      .then((res) => {
-        if (res.ok) resolve();
-        else reject();
-      })
-      .catch((err) => {
-        log(err);
-        reject();
-      });
-  });
+    });
+
+    if (!response.ok) {
+      throw new Error("Response was not ok");
+    }
+  } catch (err) {
+    log(err);
+    throw err;
+  }
 }
+
+const getColor = (result) => {
+  switch (result) {
+    case "ac":
+      return 0x00ff00;
+    case "pac":
+      return 0x57b557;
+    case "pe":
+      return 0xffa500;
+    case "wa":
+      return 0xff0000;
+    case "awa":
+      return 0x00ff00;
+    case "tle":
+      return 0xff0000;
+    case "mle":
+      return 0xff0000;
+    case "ole":
+      return 0xff0000;
+    case "rte":
+      return 0xff0000;
+    case "ce":
+      return 0xff0000;
+    case "co":
+      return 0x000000;
+    case "del":
+      return 0x000000;
+    default:
+      return 0x000000;
+  }
+};
