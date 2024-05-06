@@ -207,7 +207,10 @@ async function getWebhookMessage(
   };
 
   return {
-    content: null,
+    content: `**${handle}**님이 문제를 풀었습니다!
+언어: ${language}
+메모리: ${memory || "?"} KB, 시간: ${runtime || "?"} ms
+코드 길이: ${length} B`,
     embeds: [
       {
         title: `#${problemId}: ${solved.titleKo}`,
@@ -217,36 +220,6 @@ async function getWebhookMessage(
           {
             name: "난이도",
             value: bj_level[solved.level],
-            inline: true,
-          },
-          {
-            name: "제출번호",
-            value: `${submissionId}`,
-            inline: true,
-          },
-          {
-            name: "결과",
-            value: `${resultText}`,
-            inline: true,
-          },
-          {
-            name: "메모리",
-            value: `${memory || "?"} KB`,
-            inline: true,
-          },
-          {
-            name: "시간",
-            value: `${runtime || "?"} ms`,
-            inline: true,
-          },
-          {
-            name: "언어",
-            value: `${language}`,
-            inline: true,
-          },
-          {
-            name: "코드 길이",
-            value: `${length} B`,
             inline: true,
           },
           {
