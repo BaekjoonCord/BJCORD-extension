@@ -231,12 +231,12 @@ async function getWebhookMessage(
           },
           {
             name: "메모리",
-            value: `${memory} KB`,
+            value: `${memory || "?"} KB`,
             inline: true,
           },
           {
             name: "시간",
-            value: `${runtime} ms`,
+            value: `${runtime || "?"} ms`,
             inline: true,
           },
           {
