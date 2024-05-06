@@ -197,6 +197,15 @@ async function getWebhookMessage(
   const solved = await getProblemData(problemId);
   console.log(solved);
 
+  const getTagName = (tag) => {
+    const key = tag.key;
+    const display = tag.displayNames.filter((x) => x.language == "ko");
+
+    if (!display) return key;
+
+    return display[0].name;
+  };
+
   return {
     content: null,
     embeds: [
@@ -239,6 +248,14 @@ async function getWebhookMessage(
             name: "코드 길이",
             value: `${length} B`,
             inline: true,
+          },
+          {
+            name: "태그",
+            value: solved.tags
+              .map(getTagName)
+              .map((x) => `||${x}||`)
+              .join(", "),
+            inline: false,
           },
         ],
         author: {
