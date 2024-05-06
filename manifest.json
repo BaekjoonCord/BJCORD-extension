@@ -1,17 +1,17 @@
 {
-    "manifest_version": 3,
-    "name": "백준허브(BaekjoonHub)",
-    "description": "Automatically send BOJ to your discord server",
-    "homepage_url": "https://github.com/boj-to-discord/boj-to-discord",
-    "version": "1.0",
-    "author": "karpitony",
-    "action": {
-        "default_icon": "assets/thumbnail.png",
-        "default_popup": "popup/popup.html"
-    },
-    "icons": {
-        "16": "assets/thumbnail.png",
-        "48": "assets/thumbnail.png",
-        "128": "assets/thumbnail.png"
-    }
+  "manifest_version": 3,
+  "name": "백준코드",
+  "description": "Automatically send BOJ to your discord server",
+  "homepage_url": "https://github.com/boj-to-discord/boj-to-discord",
+  "version": "1.0",
+  "author": "karpitony, YEAHx4",
+  "action": {
+    "default_icon": "assets/thumbnail.png",
+    "default_popup": "popup/popup.html"
+  },
+  "icons": {
+    "16": "assets/thumbnail.png",
+    "48": "assets/thumbnail.png",
+    "128": "assets/thumbnail.png"
+  }
 }
