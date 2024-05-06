@@ -218,16 +218,16 @@ async function getWebhookMessage(
         color: getColor(result),
         fields: [
           {
-            name: "난이도",
-            value: bj_level[solved.level],
+            name: bj_level[solved.level],
+            value: "",
             inline: true,
           },
           {
-            name: "태그",
-            value: solved.tags
+            name: solved.tags
               .map(getTagName)
               .map((x) => `||${x}||`)
               .join(", "),
+            value: " ",
             inline: false,
           },
         ],
