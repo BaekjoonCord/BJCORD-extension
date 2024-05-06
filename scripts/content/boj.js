@@ -28,7 +28,12 @@ function watch() {
       const { username, resultCategory } = data;
 
       if (username == getHandle()) {
-        if (resultCategory == "judging" || resultCategory == "compile") return;
+        if (
+          resultCategory == "judging" ||
+          resultCategory == "compile" ||
+          resultCategory == "wait"
+        )
+          return;
 
         const time = getTimeDifference(data.submissionTime);
         if (time > 120) return;
@@ -36,6 +41,25 @@ function watch() {
         clearInterval(interval);
         log("Submission detected: " + resultCategory);
         log(data);
+        log("Sending message to Discord...");
+
+        (async () => {
+          const msg = await getWebhookMessage(
+            getHandle(),
+            data.submissionId,
+            data.problemId,
+            data.language,
+            data.memory,
+            data.resultCategory,
+            data.runtime,
+            data.codeLength,
+            data.result
+          );
+          sendMessage(
+            msg,
+            "https://discord.com/api/webhooks/1236995046964727869/r5bHZKznebAt1TFeaHQZ3ATenc_zT_Xr9QFCtCycMxFw-4CUXOAK8JQi15aAZUOGlOUu"
+          );
+        })();
       }
     }
   }, 1000);

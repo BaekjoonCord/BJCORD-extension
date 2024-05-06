@@ -147,6 +147,7 @@ function getResultTable() {
 
   return list;
 }
+
 function getTimeDifference(timestamp) {
   const monthNames = {
     "1월": "January",
@@ -180,4 +181,150 @@ function getTimeDifference(timestamp) {
   const differenceInSeconds = Math.floor(difference / 1000);
 
   return differenceInSeconds;
+}
+
+async function getWebhookMessage(
+  handle,
+  submissionId,
+  problemId,
+  language,
+  memory,
+  result,
+  runtime,
+  length,
+  resultText
+) {
+  const solved = await getProblemData(problemId);
+  console.log(solved);
+
+  const getTagName = (tag) => {
+    const key = tag.key;
+    const display = tag.displayNames.filter((x) => x.language == "ko");
+
+    if (!display) return key;
+
+    return display[0].name;
+  };
+
+  return {
+    content: null,
+    embeds: [
+      {
+        title: `#${problemId}: ${solved.titleKo}`,
+        url: `https://www.acmicpc.net/problem/${problemId}`,
+        color: getColor(result),
+        fields: [
+          {
+            name: "난이도",
+            value: bj_level[solved.level],
+            inline: true,
+          },
+          {
+            name: "제출번호",
+            value: `${submissionId}`,
+            inline: true,
+          },
+          {
+            name: "결과",
+            value: `${resultText}`,
+            inline: true,
+          },
+          {
+            name: "메모리",
+            value: `${memory || "?"} KB`,
+            inline: true,
+          },
+          {
+            name: "시간",
+            value: `${runtime || "?"} ms`,
+            inline: true,
+          },
+          {
+            name: "언어",
+            value: `${language}`,
+            inline: true,
+          },
+          {
+            name: "코드 길이",
+            value: `${length} B`,
+            inline: true,
+          },
+          {
+            name: "태그",
+            value: solved.tags
+              .map(getTagName)
+              .map((x) => `||${x}||`)
+              .join(", "),
+            inline: false,
+          },
+        ],
+        author: {
+          name: `${handle}`,
+          url: `https://solved.ac/profile/${handle}`,
+        },
+      },
+    ],
+    username: "BJCORD",
+    avatar_url:
+      "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/thumbnail.png",
+    attachments: [],
+  };
+}
+
+async function sendMessage(message, url) {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+
+    if (!response.ok) {
+      throw new Error("Response was not ok");
+    }
+  } catch (err) {
+    log(err);
+    throw err;
+  }
+}
+
+const getColor = (result) => {
+  switch (result) {
+    case "ac":
+      return 0x00ff00;
+    case "pac":
+      return 0x57b557;
+    case "pe":
+      return 0xffa500;
+    case "wa":
+      return 0xff0000;
+    case "awa":
+      return 0x00ff00;
+    case "tle":
+      return 0xff0000;
+    case "mle":
+      return 0xff0000;
+    case "ole":
+      return 0xff0000;
+    case "rte":
+      return 0xff0000;
+    case "ce":
+      return 0xff0000;
+    case "co":
+      return 0x000000;
+    case "del":
+      return 0x000000;
+    default:
+      return 0x000000;
+  }
+};
+
+async function getProblemData(id) {
+  return chrome.runtime.sendMessage({
+    sender: "boj",
+    task: "solvedProblemFetch",
+    problemId: id,
+  });
 }
