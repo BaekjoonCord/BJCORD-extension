@@ -192,7 +192,8 @@ async function getWebhookMessage(
   result,
   runtime,
   length,
-  resultText
+  resultText,
+  timestamp
 ) {
   const solved = await getProblemData(problemId);
   console.log(solved);
@@ -207,28 +208,50 @@ async function getWebhookMessage(
   };
 
   return {
-    content: `**${handle}**님이 문제를 풀었습니다!
-언어: ${language}
-메모리: ${memory || "?"} KB, 시간: ${runtime || "?"} ms
-코드 길이: ${length} B`,
+    content: null,
     embeds: [
       {
-        title: `#${problemId}: ${solved.titleKo}`,
+        title: `[${bj_level[solved.level]}] ${problemId}번: ${solved.titleKo}`,
         url: `https://www.acmicpc.net/problem/${problemId}`,
-        color: getColor(result),
+        description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n태그: ||${solved.tags
+          .map(getTagName)
+          .join(", ")}||`,
+        color: getColor(bj_level[solved.level].split(" ")[0].toLowerCase()),
         fields: [
           {
-            name: bj_level[solved.level],
-            value: "",
+            name: "성능",
+            value: `${memory} KB / ${runtime} ms`,
             inline: true,
           },
           {
-            name: solved.tags
-              .map(getTagName)
-              .map((x) => `||${x}||`)
-              .join(", "),
-            value: " ",
-            inline: false,
+            name: "언어",
+            value: `${language}`,
+            inline: true,
+          },
+          {
+            name: "시도한 횟수",
+            value: `?회`,
+            inline: true,
+          },
+          {
+            name: "제출 일자",
+            value: `${timestamp}`,
+            inline: true,
+          },
+          {
+            name: "코드 길이",
+            value: `${length} B`,
+            inline: true,
+          },
+          {
+            name: "평균 시도",
+            value: `${solved.averageTries} 회`,
+            inline: true,
+          },
+          {
+            name: "맞은 사람",
+            value: `${solved.acceptedUserCount} 명`,
+            inline: true,
           },
         ],
         author: {
@@ -263,32 +286,20 @@ async function sendMessage(message, url) {
   }
 }
 
-const getColor = (result) => {
-  switch (result) {
-    case "ac":
-      return 0x00ff00;
-    case "pac":
-      return 0x57b557;
-    case "pe":
-      return 0xffa500;
-    case "wa":
-      return 0xff0000;
-    case "awa":
-      return 0x00ff00;
-    case "tle":
-      return 0xff0000;
-    case "mle":
-      return 0xff0000;
-    case "ole":
-      return 0xff0000;
-    case "rte":
-      return 0xff0000;
-    case "ce":
-      return 0xff0000;
-    case "co":
-      return 0x000000;
-    case "del":
-      return 0x000000;
+const getColor = (tier) => {
+  switch (tier) {
+    case "bronze":
+      return 0xcd7f32;
+    case "silver":
+      return 0xc0c0c0;
+    case "gold":
+      return 0xffd700;
+    case "platinum":
+      return 0x61fa9e;
+    case "diamond":
+      return 0x4db8fa;
+    case "ruby":
+      return 0xff125d;
     default:
       return 0x000000;
   }

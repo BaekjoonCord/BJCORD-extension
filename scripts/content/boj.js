@@ -54,7 +54,8 @@ function watch() {
             data.resultCategory,
             data.runtime,
             data.codeLength,
-            data.result
+            data.result,
+            data.submissionTime
           );
           sendMessage(
             msg,
