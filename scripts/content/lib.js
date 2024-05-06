@@ -181,3 +181,94 @@ function getTimeDifference(timestamp) {
 
   return differenceInSeconds;
 }
+
+function getWebhookMessage(
+  handle,
+  submissionId,
+  problemId,
+  language,
+  memory,
+  result,
+  runtime,
+  length
+) {
+  return {
+    content: null,
+    embeds: [
+      {
+        title: `#${submissionId} ${result.toUpperCase()}`,
+        url: `https://www.acmicpc.net/problem/${problemId}`,
+        color: 5963533,
+        fields: [
+          {
+            name: "문제",
+            value: `[${problemId} : 이름](https://www.acmicpc.net/problem/${problemId})`,
+            inline: true,
+          },
+          {
+            name: "난이도",
+            value: `Platinum IV`,
+            inline: true,
+          },
+          {
+            name: "제출번호",
+            value: `${submissionId}`,
+            inline: true,
+          },
+          {
+            name: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
+            value: "ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ",
+          },
+          {
+            name: "메모리",
+            value: `${memory} KB`,
+            inline: true,
+          },
+          {
+            name: "시간",
+            value: `${runtime} ms`,
+            inline: true,
+          },
+          {
+            name: "언어",
+            value: `${language}`,
+            inline: true,
+          },
+          {
+            name: "코드 길이",
+            value: `${length} B`,
+            inline: true,
+          },
+        ],
+        author: {
+          name: `${handle}`,
+          url: `https://solved.ac/profile/${handle}`,
+        },
+      },
+    ],
+    username: "BJCORD",
+    avatar_url:
+      "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/thumbnail.png",
+    attachments: [],
+  };
+}
+
+function sendMessage(message, url) {
+  return new Promise((resolve, reject) => {
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    })
+      .then((res) => {
+        if (res.ok) resolve();
+        else reject();
+      })
+      .catch((err) => {
+        log(err);
+        reject();
+      });
+  });
+}
