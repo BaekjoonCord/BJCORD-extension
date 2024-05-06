@@ -21,8 +21,6 @@ function watch() {
 
     const data = table[0];
 
-    console.log(data);
-
     if (
       data.hasOwnProperty("username") &&
       data.hasOwnProperty("resultCategory")
@@ -30,9 +28,10 @@ function watch() {
       const { username, resultCategory } = data;
 
       if (username == getHandle()) {
-        if (resultCategory == "judging") return;
+        if (resultCategory == "judging" || resultCategory == "compile") return;
 
-        console.dir(getTimeDifference(data.submissionTime));
+        const time = getTimeDifference(data.submissionTime);
+        if (time > 120) return;
 
         clearInterval(interval);
         log("Submission detected: " + resultCategory);
