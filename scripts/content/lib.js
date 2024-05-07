@@ -192,7 +192,8 @@ async function getWebhookMessage(
   result,
   runtime,
   length,
-  resultText
+  resultText,
+  timestamp
 ) {
   const solved = await getProblemData(problemId);
   console.log(solved);
@@ -210,33 +211,16 @@ async function getWebhookMessage(
     content: null,
     embeds: [
       {
-        title: `#${problemId}: ${solved.titleKo}`,
+        title: `[${bj_level[solved.level]}] ${problemId}번: ${solved.titleKo}`,
         url: `https://www.acmicpc.net/problem/${problemId}`,
-        color: getColor(result),
+        description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n태그: ||${solved.tags
+          .map(getTagName)
+          .join(", ")}||`,
+        color: getColor(bj_level[solved.level].split(" ")[0].toLowerCase()),
         fields: [
           {
-            name: "난이도",
-            value: bj_level[solved.level],
-            inline: true,
-          },
-          {
-            name: "제출번호",
-            value: `${submissionId}`,
-            inline: true,
-          },
-          {
-            name: "결과",
-            value: `${resultText}`,
-            inline: true,
-          },
-          {
-            name: "메모리",
-            value: `${memory || "?"} KB`,
-            inline: true,
-          },
-          {
-            name: "시간",
-            value: `${runtime || "?"} ms`,
+            name: "성능",
+            value: `${memory} KB / ${runtime} ms`,
             inline: true,
           },
           {
@@ -245,22 +229,41 @@ async function getWebhookMessage(
             inline: true,
           },
           {
+            name: "시도한 횟수",
+            value: `?회`,
+            inline: true,
+          },
+          {
+            name: "제출 일자",
+            value: `${timestamp}`,
+            inline: true,
+          },
+          {
             name: "코드 길이",
             value: `${length} B`,
             inline: true,
           },
           {
-            name: "태그",
-            value: solved.tags
-              .map(getTagName)
-              .map((x) => `||${x}||`)
-              .join(", "),
-            inline: false,
+            name: "평균 시도",
+            value: `${solved.averageTries} 회`,
+            inline: true,
+          },
+          {
+            name: "맞은 사람",
+            value: `${solved.acceptedUserCount} 명`,
+            inline: true,
           },
         ],
         author: {
           name: `${handle}`,
           url: `https://solved.ac/profile/${handle}`,
+        },
+        thumbnail: {
+          url: `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/${bj_level[
+            solved.level
+          ]
+            .replace(" ", "")
+            .toLowerCase()}.png`,
         },
       },
     ],
@@ -290,32 +293,20 @@ async function sendMessage(message, url) {
   }
 }
 
-const getColor = (result) => {
-  switch (result) {
-    case "ac":
-      return 0x00ff00;
-    case "pac":
-      return 0x57b557;
-    case "pe":
-      return 0xffa500;
-    case "wa":
-      return 0xff0000;
-    case "awa":
-      return 0x00ff00;
-    case "tle":
-      return 0xff0000;
-    case "mle":
-      return 0xff0000;
-    case "ole":
-      return 0xff0000;
-    case "rte":
-      return 0xff0000;
-    case "ce":
-      return 0xff0000;
-    case "co":
-      return 0x000000;
-    case "del":
-      return 0x000000;
+const getColor = (tier) => {
+  switch (tier) {
+    case "bronze":
+      return 0xcd7f32;
+    case "silver":
+      return 0xc0c0c0;
+    case "gold":
+      return 0xffd700;
+    case "platinum":
+      return 0x61fa9e;
+    case "diamond":
+      return 0x4db8fa;
+    case "ruby":
+      return 0xff125d;
     default:
       return 0x000000;
   }
