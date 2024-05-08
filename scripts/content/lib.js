@@ -34,6 +34,12 @@ function logErr(text) {
   console.error("[BJCORD]", text);
 }
 
+/**
+ * HTML 문자열의 escape된 문자를 unescape하여 반환합니다.
+ *
+ * @param {string} text HTML 문자열
+ * @returns {string} unescape된 문자열
+ */
 function unescapeHtml(text) {
   const unescaped = {
     "&amp;": "&",
@@ -49,11 +55,10 @@ function unescapeHtml(text) {
     "&nbsp;": " ",
     "&#160;": " ",
   };
+
   return text.replace(
     /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34|nbsp|#160);/g,
-    function (m) {
-      return unescaped[m];
-    }
+    (m) => unescaped[m]
   );
 }
 
@@ -62,6 +67,10 @@ String.prototype.unescapeHtml = function () {
   return unescapeHtml(this);
 };
 
+/**
+ * 채점 테이블의 데이터를 파싱하고 반환합니다.
+ * @returns {Array<Object>} 테이블의 데이터를 반환합니다.
+ */
 function getResultTable() {
   const table = document.getElementById("status-table");
 
@@ -148,6 +157,13 @@ function getResultTable() {
   return list;
 }
 
+/**
+ * 두 날짜 사이의 시간 차이를 초 단위로 반환합니다.
+ * 타임스탬프가 한국어로 되어 있는 경우 영어로 변환합니다.
+ *
+ * @param {string} timestamp
+ * @returns {number} 시간 차이를 초 단위로 반환합니다.
+ */
 function getTimeDifference(timestamp) {
   const monthNames = {
     "1월": "January",
@@ -183,6 +199,25 @@ function getTimeDifference(timestamp) {
   return differenceInSeconds;
 }
 
+/**
+ * 데이터를 기반으로 웹훅 메세지를 생성합니다.
+ * Discord의 Embed Object를 반환합니다.
+ * 문제 데이터를 받아오기 위해 service worker를 통해
+ * solved.ac의 API를 호출합니다.
+ *
+ * @param {string} handle 유저의 핸들
+ * @param {string | number} submissionId 제출 번호
+ * @param {string | number} problemId 문제 번호
+ * @param {string} language 제출한 언어 이름
+ * @param {number} memory 메모리 사용량 (KB)
+ * @param {string} result 실행 결과
+ * @param {number} runtime 실행 시간 (ms)
+ * @param {number} length 코드 길이 (B)
+ * @param {string} resultText 결과 텍스트
+ * @param {string} timestamp 제출한 시간
+ * @param {number} attemps 시도 횟수
+ * @returns {Promise<Object>} 웹훅 메시지를 반환합니다.
+ */
 async function getWebhookMessage(
   handle,
   submissionId,
@@ -193,7 +228,8 @@ async function getWebhookMessage(
   runtime,
   length,
   resultText,
-  timestamp
+  timestamp,
+  attemps
 ) {
   const solved = await getProblemData(problemId);
   console.log(solved);
@@ -230,7 +266,7 @@ async function getWebhookMessage(
           },
           {
             name: "시도한 횟수",
-            value: `?회`,
+            value: `${attemps} 회`,
             inline: true,
           },
           {
@@ -274,6 +310,13 @@ async function getWebhookMessage(
   };
 }
 
+/**
+ * 웹훅 메세지를 전송합니다.
+ * POST 요청을 사용하여 메세지를 전송합니다.
+ *
+ * @param {string} message 전송할 웹훅 메세지
+ * @param {string} url 웹훅 URL
+ */
 async function sendMessage(message, url) {
   try {
     const response = await fetch(url, {
@@ -293,6 +336,12 @@ async function sendMessage(message, url) {
   }
 }
 
+/**
+ * 문제의 티어에 맞는 색상을 리턴합니다.
+ *
+ * @param {string} tier 문제의 티어 영문 (Platinum IV)
+ * @returns {number} 티어에 해당하는 색상 코드
+ */
 const getColor = (tier) => {
   switch (tier) {
     case "bronze":
@@ -312,6 +361,12 @@ const getColor = (tier) => {
   }
 };
 
+/**
+ * service worker를 통해 solved.ac의 API를 호출하여 문제 데이터를 가져옵니다.
+ *
+ * @param {number} id 문제 번호
+ * @returns {Promise<Object>} 문제 데이터를 반환합니다.
+ */
 async function getProblemData(id) {
   return chrome.runtime.sendMessage({
     sender: "boj",
