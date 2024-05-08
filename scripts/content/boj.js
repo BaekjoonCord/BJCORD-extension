@@ -1,10 +1,11 @@
+// 만약 '제출'페이지를 보고 있다면, 이 스크립트가 실행된다.
 log("BOJ status page detected!");
 log("Current user: " + getHandle());
-// log(getResultTable());
 
 const currentUrl = window.location.href;
 const handle = getHandle();
 
+// 현재 페이지가 '내 제출' 페이지인지 확인한다.
 if (!!handle) {
   if (
     ["status", `user_id=${handle}`, "problem_id", "from_mine=1"].every((key) =>
@@ -14,6 +15,9 @@ if (!!handle) {
     watch();
 }
 
+/**
+ * 1초마다 제출 결과를 확인한다. 제출 결과가 AC인 경우, Discord로 메시지를 전송한다.
+ */
 function watch() {
   const interval = setInterval(() => {
     const table = getResultTable();
@@ -65,6 +69,8 @@ function watch() {
             data.submissionTime,
             attemps
           );
+
+          // TODO : Flexibly change the webhook URL via the settings page.
           sendMessage(
             msg,
             "https://discord.com/api/webhooks/1236995046964727869/r5bHZKznebAt1TFeaHQZ3ATenc_zT_Xr9QFCtCycMxFw-4CUXOAK8JQi15aAZUOGlOUu"
