@@ -49,7 +49,7 @@ function watch() {
         log("Sending message to Discord...");
 
         let attemps = 1;
-        for (let i = 0; i < table.length; i++) {
+        for (let i = 1; i < table.length; i++) {
           if (table[i].username != username) break;
           if (table[i].resultCategory != "ac") attemps++;
           else break;
