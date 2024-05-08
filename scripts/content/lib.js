@@ -193,7 +193,8 @@ async function getWebhookMessage(
   runtime,
   length,
   resultText,
-  timestamp
+  timestamp,
+  attemps
 ) {
   const solved = await getProblemData(problemId);
   console.log(solved);
@@ -230,7 +231,7 @@ async function getWebhookMessage(
           },
           {
             name: "시도한 횟수",
-            value: `?회`,
+            value: `${attemps} 회`,
             inline: true,
           },
           {

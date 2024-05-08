@@ -44,6 +44,13 @@ function watch() {
         log(data);
         log("Sending message to Discord...");
 
+        let attemps = 1;
+        for (let i = 0; i < table.length; i++) {
+          if (table[i].username != username) break;
+          if (table[i].resultCategory != "ac") attemps++;
+          else break;
+        }
+
         (async () => {
           const msg = await getWebhookMessage(
             getHandle(),
@@ -55,7 +62,8 @@ function watch() {
             data.runtime,
             data.codeLength,
             data.result,
-            data.submissionTime
+            data.submissionTime,
+            attemps
           );
           sendMessage(
             msg,
