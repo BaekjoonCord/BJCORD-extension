@@ -1,9 +1,62 @@
 body {
   width: 400px;
-  height: 800px;
+  height: 400px;
+  height: fit-content;
 }
 
 .main-title {
   text-align: center;
   user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.main-title div {
+  display: flex;
+  align-items: center;
+}
+
+.main-title div img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 10px;
+  height: 300px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.usage {
+  font-size: 14px;
+  color: #666;
+}
+
+.usage-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom-links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bottom-links * {
+  height: 50px;
 }
