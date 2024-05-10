@@ -53,4 +53,28 @@
 <br>
 
 ## Contributors
-TBD
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/5tarlight"><img src="https://avatars.githubusercontent.com/u/45203447?v=100" width="100px;" alt="5tarlight"/><br /><sub><b>YEAHx4</b></sub></a><br />
+      <a href="#maintenance-5tarlight" title="Maintenance">🚧</a> &
+      <a href="https://github.com/https://github.com/BaekjoonCord/BJCORD-extension/commits?author=5tarlight" title="Code">💻</a> 
+      </td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/karpitony"><img src="https://avatars.githubusercontent.com/u/87839885?v=100" width="100px;" alt="karpitony"/><br /><sub><b>Yunseok</b></sub></a><br />
+      <a href="https://github.com/https://github.com/BaekjoonCord/BJCORD-extension/commits?author=karpitony" title="Documentation">📖</a>
+      </td>
+      <!-- 당신을 위한 자리--->
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+      <td>
+      </td>
+    </tr>
+  </tbody>
+</table>
+Contributer 테이블은 항상 빈자리가 있습니다. 당신이 와서 채워주세요!
