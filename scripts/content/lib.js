@@ -232,7 +232,7 @@ async function getWebhookMessage(
   attemps
 ) {
   const solved = await getProblemData(problemId);
-  console.log(solved);
+  // console.log(solved);
 
   const getTagName = (tag) => {
     const key = tag.key;
@@ -306,6 +306,12 @@ async function getWebhookMessage(
   };
 }
 
+/**
+ * 문제 티어에 맞는 이미지 URL을 반환합니다.
+ *
+ * @param {string} level 문제 티어 (Bronze V ~ Ruby I, Unrated 등)
+ * @returns {string} 티어에 해당하는 이미지 URL
+ */
 function getLevelImg(level) {
   const tier = level.split(" ")[0];
   if (tier == "Unrated") {
