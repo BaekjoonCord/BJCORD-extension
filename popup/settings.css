@@ -1,0 +1,71 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 3rem;
+  margin-top: 2rem;
+}
+
+.title-content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title-logo {
+  width: 4rem;
+  height: 4rem;
+  margin-right: 10px;
+}
+
+.webhook-container {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem auto;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 400px;
+  width: 600px;
+  overflow: auto;
+  background-color: #424549;
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.webhook-bottom {
+  display: flex;
+  gap: 10px;
+}
+
+.webhook-bottom * {
+  height: 30px;
+}
+
+.webhook-bottom input {
+  padding: 0 10px;
+}
+
+.name-input {
+  width: 20%;
+}
+
+.url-input {
+  width: 70%;
+}
+
+.webhook-bottom input:focus {
+  outline: none;
+}
+
+.webhook-bottom button {
+  width: 10%;
+  background-color: #7289da;
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
