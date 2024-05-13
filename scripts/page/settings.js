@@ -3,6 +3,10 @@ const webhooks = [
     name: "test",
     url: "https://example.com/webhook",
   },
+  {
+    name: "test2",
+    url: "https://example.com/webhook2",
+  },
 ];
 
 function render() {
@@ -18,8 +22,18 @@ function render() {
     webhookUrl.classList.add("webhook-url");
     webhookUrl.textContent = webhook.url;
 
+    const webhookDelete = document.createElement("button");
+    webhookDelete.classList.add("webhook-delete");
+    webhookDelete.textContent = "X";
+    webhookDelete.addEventListener("click", () => {
+      const index = webhooks.indexOf(webhook);
+      webhooks.splice(index, 1);
+      render();
+    });
+
     webhookElement.appendChild(webhookName);
     webhookElement.appendChild(webhookUrl);
+    webhookElement.appendChild(webhookDelete);
 
     return webhookElement;
   });
