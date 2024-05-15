@@ -2,11 +2,13 @@
   <img src="assets/thumbnail.png" alt="백준코드 | BaekjoonCord" width="400">
   <br>
   백준코드 | BaekjoonCord
-  <br>
-  <br>
 </h1>
 
 <p align="center">
+  <font size = "5">Automaticaliy send your BOJ to Discord.</font>
+  <br>
+  <br>
+  <br>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"/></a>
 
 </p>

@@ -232,7 +232,7 @@ async function getWebhookMessage(
   attemps
 ) {
   const solved = await getProblemData(problemId);
-  console.log(solved);
+  // console.log(solved);
 
   const getTagName = (tag) => {
     const key = tag.key;
@@ -295,11 +295,7 @@ async function getWebhookMessage(
           url: `https://solved.ac/profile/${handle}`,
         },
         thumbnail: {
-          url: `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/${bj_level[
-            solved.level
-          ]
-            .replace(" ", "")
-            .toLowerCase()}.png`,
+          url: getLevelImg(bj_level[solved.level]),
         },
       },
     ],
@@ -308,6 +304,46 @@ async function getWebhookMessage(
       "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/thumbnail.png",
     attachments: [],
   };
+}
+
+/**
+ * 문제 티어에 맞는 이미지 URL을 반환합니다.
+ *
+ * @param {string} level 문제 티어 (Bronze V ~ Ruby I, Unrated 등)
+ * @returns {string} 티어에 해당하는 이미지 URL
+ */
+function getLevelImg(level) {
+  const tier = level.split(" ")[0];
+  if (tier == "Unrated") {
+    return `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/unrated.png`;
+  }
+
+  const step = level.split(" ")[1];
+
+  let stepNum = 0;
+  switch (step) {
+    case "I":
+      stepNum = 1;
+      break;
+    case "II":
+      stepNum = 2;
+      break;
+    case "III":
+      stepNum = 3;
+      break;
+    case "IV":
+      stepNum = 4;
+      break;
+    case "V":
+      stepNum = 5;
+      break;
+    default:
+      stepNum = 0;
+  }
+
+  return `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/${
+    tier.toLowerCase() + stepNum
+  }.png`;
 }
 
 /**
@@ -373,4 +409,15 @@ async function getProblemData(id) {
     task: "solvedProblemFetch",
     problemId: id,
   });
+}
+
+/**
+ * 크롬 스토리지에 저장된 웹훅 목록을 불러옵니다.
+ * 각 웹훅 객체는 `{name, url, enabled}`로 구성됩니다.
+ *
+ * @returns {Array<Object>} 웹훅 목록을 반환합니다.
+ */
+async function getWebhooks() {
+  const data = await chrome.storage.sync.get("webhooks");
+  return data.webhooks || [];
 }
