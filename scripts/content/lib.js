@@ -410,3 +410,14 @@ async function getProblemData(id) {
     problemId: id,
   });
 }
+
+/**
+ * 크롬 스토리지에 저장된 웹훅 목록을 불러옵니다.
+ * 각 웹훅 객체는 `{name, url, enabled}`로 구성됩니다.
+ *
+ * @returns {Array<Object>} 웹훅 목록을 반환합니다.
+ */
+async function getWebhooks() {
+  const data = await chrome.storage.sync.get("webhooks");
+  return data.webhooks || [];
+}
