@@ -122,9 +122,8 @@ input:checked + .slider:before {
   align-items: center;
 }
 
-.twitch-text {
+.switch-text {
   font-size: 14px;
-  color: #666;
 }
 
 .no-webhook {
