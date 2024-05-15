@@ -1,6 +1,7 @@
 body {
   width: 400px;
-  height: 800px;
+  height: 400px;
+  height: fit-content;
 }
 
 .main-title {
