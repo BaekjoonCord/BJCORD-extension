@@ -410,3 +410,8 @@ async function getProblemData(id) {
     problemId: id,
   });
 }
+
+async function getWebhooks() {
+  const data = await chrome.storage.sync.get("webhooks");
+  return data.webhooks || [];
+}
