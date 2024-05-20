@@ -46,6 +46,7 @@ function watch() {
         clearInterval(interval);
         log("Submission detected: " + resultCategory);
         log(data);
+        log("Sending message to Discord...");
 
         let attemps = 1;
         for (let i = 1; i < table.length; i++) {
@@ -54,9 +55,7 @@ function watch() {
           else break;
         }
 
-        log("Sending message to Discord...");
         (async () => {
-          const startTime = new Date().getTime();
           const msg = await getWebhookMessage(
             getHandle(),
             data.submissionId,
@@ -71,29 +70,11 @@ function watch() {
             attemps
           );
 
-          const webhooks = await getWebhooks();
-          const enabled = webhooks.filter((x) => x.enabled);
-          log(
-            webhooks.length + " webhooks found. " + enabled.length + " enabled."
+          // TODO : Flexibly change the webhook URL via the settings page.
+          sendMessage(
+            msg,
+            "https://discord.com/api/webhooks/1236995046964727869/r5bHZKznebAt1TFeaHQZ3ATenc_zT_Xr9QFCtCycMxFw-4CUXOAK8JQi15aAZUOGlOUu"
           );
-
-          let success = 0;
-          let failed = 0;
-          for (const webhook of enabled) {
-            try {
-              await sendMessage(msg, webhook.url);
-              success++;
-            } catch (e) {
-              logErr(e);
-              failed++;
-            }
-          }
-
-          log("Message sent to " + success + " webhooks.");
-          if (failed > 0) logErr(failed + " webhooks failed to send message.");
-          const endTime = new Date().getTime();
-
-          log("Took " + (endTime - startTime) + "ms");
         })();
       }
     }

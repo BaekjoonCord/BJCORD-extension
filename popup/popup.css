@@ -31,11 +31,8 @@ body {
   margin: 2rem auto;
   gap: 10px;
   height: 200px;
-  width: 250px;
+  width: 200px;
   overflow: auto;
-  background-color: #424549;
-  padding: 20px;
-  border-radius: 10px;
 }
 
 .usage {
@@ -125,9 +122,9 @@ input:checked + .slider:before {
   align-items: center;
 }
 
-.switch-text {
+.twitch-text {
   font-size: 14px;
-  color: white;
+  color: #666;
 }
 
 .no-webhook {
