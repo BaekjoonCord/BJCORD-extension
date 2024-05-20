@@ -40,7 +40,23 @@
 **2. 설정 페이지에서 `디스코드 웹훅`을 등록해주세요.**
 ![screenshot04.png](assets/readme_img/screenshot04.png)
 `URL` 칸에는 디스코드 서버 관리자에게 제공받은 웹훅 URL을 입력해주시고, `이름` 칸에는 그 웹훅을 기억할 이름을 입력해주시면 됩니다. 그후 파란색 `추가` 버튼을 누르면 등록이 완료됩니다.
+
+![screenshot05.png](assets/readme_img/screenshot05.png)
+등록한 `웹훅 URL`과 `이름`을 삭제하려면 오른쪽에 있는 빨간 X 버튼을 눌러주세요. 
+
+![screenshot06.png](assets/readme_img/screenshot06.png)
+크롬 확장앱의 팝업창을 통해서 간단하게 제어할 수도 있습니다. 이 화면에는 설정 페이지에서 설정한 `이름`이 표시되며 토글 스위치를 통해 잠시 비활성화 해둘 수도 있습니다! 또한 여러 웹훅에 동시에 메세지를 보낼 수도 있습니다.
 <br>
+
+**3. 백준을 푸세요! 그리고 맞춘 문제를 공유하세요!**
+|![screenshot07.png](assets/readme_img/screenshot07.png)|![screenshot08.png](assets/readme_img/screenshot08.png)|
+|:---:|:---:|
+|맞은 문제를 인식합니다|메세지는 이런식으로 보내집니다|
+
+`맞았습니다!`라는 문구를 인식하고 맞춘 문제를 웹훅을 통해 디스코드로 보내줍니다!
+
+
+
 
 ### 2. 디스코드 서버 관리자
 **1. `서버 설정` -> `연동` -> `웹후크 만들기`를 눌러주세요.**
