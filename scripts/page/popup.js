@@ -1,5 +1,13 @@
+/**
+ * @typedef {Object} Webhook 웹훅 리스트
+ */
 const webhooks = [];
 
+/**
+ * chrome extension 아이콘의 href 를 설정 페이지로 변경합니다.
+ *
+ * @returns {void}
+ */
 function injectSettingPage() {
   const setting = document.getElementById("a-setting-page");
   if (!setting) return;
@@ -9,6 +17,10 @@ function injectSettingPage() {
   setting.href = `chrome-extension://${id}/popup/settings.html`;
 }
 
+/**
+ * chrome sync 에서 웹훅을 불러옵니다.
+ * webhook에 저장합니다.
+ */
 async function load() {
   const data = await chrome.storage.sync.get("webhooks");
   if (data.webhooks) {
@@ -18,6 +30,11 @@ async function load() {
   console.log(data);
 }
 
+/**
+ * 로딩된 웹훅을 렌더링합니다.
+ * 웹훅의 상태에 따라 스위치를 표시합니다.
+ * 스위치가 변경될 때마다 chrome sync에 저장합니다.
+ */
 function render() {
   const list = document.getElementById("webhook-list");
   list.innerHTML = "";
@@ -51,6 +68,9 @@ function render() {
   });
 }
 
+/**
+ * 초기화 프로세스를 실행합니다.
+ */
 async function init() {
   injectSettingPage();
   await load();
