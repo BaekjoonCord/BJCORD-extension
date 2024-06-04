@@ -16,6 +16,16 @@ if (!!handle) {
 }
 
 /**
+ * 내 제출 페이지에서 채점 중인 제출이 있는지 확인한다.
+ * 기존엔 120초 내 AC가 있었다면 웹훅을 전송했지만
+ * 채점이 오래 걸리면 제대로 감지하지 못하는 경우가 있었다.
+ * 10초 내 AC는 바로 웹훅을 전송하고 10초 이상된 AC는
+ * isJudging이 true인지 확인하고 전송한다.
+ */
+let isJudging = false;
+let judgeStartTime = 0;
+
+/**
  * 1초마다 제출 결과를 확인한다. 제출 결과가 AC인 경우, Discord로 메시지를 전송한다.
  */
 function watch() {
@@ -38,10 +48,26 @@ function watch() {
         //   resultCategory == "wait"
         // )
         //   return;
-        if (resultCategory != "ac") return;
+        if (resultCategory == "judging") {
+          if (!isJudging) {
+            isJudging = true;
+            judgeStartTime = new Date().getTime();
+            log("Waiting for judge result...");
+          }
+          return;
+        }
+        if (resultCategory != "ac") {
+          log('Result is not "AC". Aborted.');
+          return;
+        }
 
         const time = getTimeDifference(data.submissionTime);
-        if (time > 120) return;
+        if (time > 10) {
+          if (!isJudging) return;
+
+          const duration = new Date().getTime() - judgeStartTime;
+          log("AC detected. " + duration / 1000 + " s elapsed.");
+        }
 
         clearInterval(interval);
         log("Submission detected: " + resultCategory);
