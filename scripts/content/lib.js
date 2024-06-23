@@ -232,7 +232,7 @@ async function getWebhookMessage(
   attemps
 ) {
   const solved = await getProblemData(problemId);
-  console.log(solved);
+  //console.log(solved);
 
   const getTagName = (tag) => {
     const key = tag.key;
