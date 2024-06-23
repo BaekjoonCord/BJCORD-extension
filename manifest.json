@@ -25,7 +25,8 @@
     }
   ],
   "background": {
-    "service_worker": "scripts/service/serviceWorker.js"
+    "service_worker": "scripts/service/serviceWorker.js",
+    "scripts": ["scripts/service/serviceWorker.js"]
   },
   "host_permissions": ["https://solved.ac/api/v3/*"],
   "permissions": ["storage"]
