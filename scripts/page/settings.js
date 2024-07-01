@@ -23,7 +23,6 @@ function render() {
 
     const webhookDelete = document.createElement("button");
     webhookDelete.classList.add("webhook-delete");
-    webhookDelete.textContent = "X";
     webhookDelete.addEventListener("click", () => {
       remove(i);
     });
@@ -84,6 +83,7 @@ async function remove(index) {
  * @param {string} url 웹훅 URL
  */
 async function add(name, url) {
+  if (name === "" || url === "") return;
   webhooks.push({ name, url, enabled: true });
   render();
   await chrome.storage.sync.set({ webhooks });
