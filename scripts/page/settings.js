@@ -98,7 +98,7 @@ async function load() {
   console.log(data);
 }
 /**
- * 이벤트 리스너를 추가하고 초기 렌더링을 수행합니.
+ * 이벤트 리스너를 추가하고 초기 렌더링을 수행합니다.
  */
 async function init() {
   const addButton = document.getElementById("add-webhook");
