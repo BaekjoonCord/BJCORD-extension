@@ -36,8 +36,13 @@ function render() {
   });
 
   const webhooksElement = document.getElementById("webhook-list");
-  webhooksElement.innerHTML = "";
-  webhooksElement.append(...wh);
+  if (webhooks.length) {
+    webhooksElement.innerHTML = "";
+    webhooksElement.append(...wh);
+  }
+  else {
+    webhooksElement.innerHTML = "<span style='font-size: large;'>등록된 웹훅이 없습니다.</span>";
+  }
 }
 
 /**
