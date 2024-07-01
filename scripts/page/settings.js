@@ -38,9 +38,9 @@ function render() {
   if (webhooks.length) {
     webhooksElement.innerHTML = "";
     webhooksElement.append(...wh);
-  }
-  else {
-    webhooksElement.innerHTML = "<span style='font-size: large;'>등록된 웹훅이 없습니다.</span>";
+  } else {
+    webhooksElement.innerHTML =
+      "<span style='font-size: large;'>등록된 웹훅이 없습니다.</span>";
   }
 }
 
@@ -102,6 +102,7 @@ async function load() {
   console.log("Webhooks loaded");
   console.log(data);
 }
+
 /**
  * 이벤트 리스너를 추가하고 초기 렌더링을 수행합니다.
  */

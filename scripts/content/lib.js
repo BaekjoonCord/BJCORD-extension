@@ -62,7 +62,9 @@ function unescapeHtml(text) {
   );
 }
 
-/** 문자열을 unescape 하여 반환합니다. */
+/**
+ * 문자열을 unescape 하여 반환합니다.
+ */
 String.prototype.unescapeHtml = function () {
   return unescapeHtml(this);
 };
