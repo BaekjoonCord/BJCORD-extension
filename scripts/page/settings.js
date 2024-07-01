@@ -23,7 +23,6 @@ function render() {
 
     const webhookDelete = document.createElement("button");
     webhookDelete.classList.add("webhook-delete");
-    webhookDelete.textContent = "X";
     webhookDelete.addEventListener("click", () => {
       remove(i);
     });
@@ -36,8 +35,13 @@ function render() {
   });
 
   const webhooksElement = document.getElementById("webhook-list");
-  webhooksElement.innerHTML = "";
-  webhooksElement.append(...wh);
+  if (webhooks.length) {
+    webhooksElement.innerHTML = "";
+    webhooksElement.append(...wh);
+  }
+  else {
+    webhooksElement.innerHTML = "<span style='font-size: large;'>등록된 웹훅이 없습니다.</span>";
+  }
 }
 
 /**
@@ -79,6 +83,7 @@ async function remove(index) {
  * @param {string} url 웹훅 URL
  */
 async function add(name, url) {
+  if (name === "" || url === "") return;
   webhooks.push({ name, url, enabled: true });
   render();
   await chrome.storage.sync.set({ webhooks });
@@ -98,7 +103,7 @@ async function load() {
   console.log(data);
 }
 /**
- * 이벤트 리스너를 추가하고 초기 렌더링을 수행합니.
+ * 이벤트 리스너를 추가하고 초기 렌더링을 수행합니다.
  */
 async function init() {
   const addButton = document.getElementById("add-webhook");

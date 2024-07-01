@@ -15,7 +15,7 @@
 
 </p>
 
-</br>
+<br />
 
 1. [**백준코드란?**](#백준코드란?)
 2. [**사용 방법**](#사용-방법)
@@ -101,6 +101,9 @@
       </td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/karpitony"><img src="https://avatars.githubusercontent.com/u/87839885?v=100" width="100px;" alt="karpitony"/><br /><sub><b>Yunseok</b></sub></a><br />
       <a href="https://github.com/https://github.com/BaekjoonCord/BJCORD-extension/commits?author=karpitony" title="Documentation">📖</a>
+      </td>
+      <td align="center" valign="top" width="14.28%">
+         <a href="https://github.com/rdxxer"><img src="https://avatars.githubusercontent.com/u/46419718?v=100" width="100px;" alt="rdxxer"/><br /><b>rdxxer</b></a><br />
       </td>
       <!-- 당신을 위한 자리--->
       <td align="center" valign="top" width="14.28%">

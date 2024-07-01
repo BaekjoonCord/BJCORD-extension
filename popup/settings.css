@@ -6,6 +6,7 @@
 
 .title {
   font-size: 1.5rem;
+  font-weight: bold;
   margin-bottom: 3rem;
   margin-top: 2rem;
 }
@@ -63,12 +64,16 @@
   outline: none;
 }
 
-.webhook-bottom button {
+#add-webhook {
   width: 10%;
-  background-color: #7289da;
+  background-color: #3556ca;
   color: white;
   border: none;
   border-radius: 2px;
+}
+
+#add-webhook:hover {
+  background-color: #7289da;
 }
 
 .webhook {
@@ -82,12 +87,18 @@
 
 .webhook-name {
   width: 20%;
+  padding-right: 3%;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .webhook-url {
   width: 75%;
+  padding-right: 5%;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .webhook-delete {
@@ -96,6 +107,10 @@
   color: white;
   border: none;
   border-radius: 2px;
+}
+.webhook-delete:after {
+  content: "\00d7";
+  font-size: medium;
 }
 
 .webhook-delete:hover {
