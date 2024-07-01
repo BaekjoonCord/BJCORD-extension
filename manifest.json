@@ -3,7 +3,7 @@
   "name": "백준코드",
   "description": "Automatically send BOJ to your discord server",
   "homepage_url": "https://github.com/BaekjoonCord/BJCORD-extension",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "karpitony, YEAHx4",
   "action": {
     "default_icon": "assets/thumbnail.png",

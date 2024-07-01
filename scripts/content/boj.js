@@ -17,10 +17,8 @@ if (!!handle) {
 
 /**
  * 내 제출 페이지에서 채점 중인 제출이 있는지 확인한다.
- * 기존엔 120초 내 AC가 있었다면 웹훅을 전송했지만
- * 채점이 오래 걸리면 제대로 감지하지 못하는 경우가 있었다.
  * 10초 내 AC는 바로 웹훅을 전송하고 10초 이상된 AC는
- * isJudging이 true인지 확인하고 전송한다.
+ * `isJudging`이 true인지 확인하고 전송한다.
  */
 let isJudging = false;
 let judgeStartTime = 0;
@@ -42,12 +40,6 @@ function watch() {
       const { username, resultCategory } = data;
 
       if (username == getHandle()) {
-        // if (
-        //   resultCategory == "judging" ||
-        //   resultCategory == "compile" ||
-        //   resultCategory == "wait"
-        // )
-        //   return;
         if (resultCategory == "judging") {
           if (!isJudging) {
             isJudging = true;
