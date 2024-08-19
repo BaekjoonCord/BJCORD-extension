@@ -95,15 +95,12 @@
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/5tarlight"><img src="https://avatars.githubusercontent.com/u/45203447?v=100" width="100px;" alt="5tarlight"/><br /><sub><b>YEAHx4</b></sub></a><br />
-      <a href="#maintenance-5tarlight" title="Maintenance">🚧</a> &
-      <a href="https://github.com/https://github.com/BaekjoonCord/BJCORD-extension/commits?author=5tarlight" title="Code">💻</a> 
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/5tarlight"><img src="https://avatars.githubusercontent.com/u/45203447?v=100" width="100px;" alt="5tarlight"/><br /><sub><b>YEAHx4</b></sub></a>
       </td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/karpitony"><img src="https://avatars.githubusercontent.com/u/87839885?v=100" width="100px;" alt="karpitony"/><br /><sub><b>Yunseok</b></sub></a><br />
-      <a href="https://github.com/https://github.com/BaekjoonCord/BJCORD-extension/commits?author=karpitony" title="Documentation">📖</a>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/karpitony"><img src="https://avatars.githubusercontent.com/u/87839885?v=100" width="100px;" alt="karpitony"/><br /><sub><b>Yunseok</b></sub></a>
       </td>
       <td align="center" valign="top" width="14.28%">
-         <a href="https://github.com/rdxxer"><img src="https://avatars.githubusercontent.com/u/46419718?v=100" width="100px;" alt="rdxxer"/><br /><b>rdxxer</b></a><br />
+         <a href="https://github.com/rdxxer"><img src="https://avatars.githubusercontent.com/u/46419718?v=100" width="100px;" alt="rdxxer"/><br /><b>rdxxer</b></a>
       </td>
       <!-- 당신을 위한 자리--->
       <td align="center" valign="top" width="14.28%">
