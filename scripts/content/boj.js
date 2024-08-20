@@ -40,7 +40,11 @@ function watch() {
       const { username, resultCategory } = data;
 
       if (username == getHandle()) {
-        if (resultCategory == "judging") {
+        if (
+          resultCategory === "judging" ||
+          resultCategory === "wait" ||
+          resultCategory === "compile"
+        ) {
           if (!isJudging) {
             isJudging = true;
             judgeStartTime = new Date().getTime();
