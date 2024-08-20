@@ -113,27 +113,36 @@ function watch() {
 
           log("Message sent to " + success + " webhooks.");
           if (failed > 0) logErr(failed + " webhooks failed to send message.");
-          const endTime = new Date().getTime();
 
-          log("Took " + (endTime - startTime) + "ms");
+          if (await getShowEmoji()) {
+            /**  메시지 전송 결과에 따라 체크 또는 X 표시
+             * 모든 웹훅이 정상 작동되면 체크 표시
+             * 웹훅이 아무것도 등록이 안된 경우에는 X로 표시
+             */
+            log("Appending status emoji...");
 
-          /**  메시지 전송 결과에 따라 체크 또는 X 표시
-           * 모든 웹훅이 정상 작동되면 체크 표시
-           * 웹훅이 아무것도 등록이 안된 경우에는 X로 표시
-           */
-          const statusCell = document.querySelector(
-            "span.result-text.result-ac"
-          );
+            const statusCell = document.querySelector(
+              "span.result-text.result-ac"
+            );
 
-          if (statusCell) {
-            if (success > 0 && failed === 0) {
-              statusCell.innerHTML += '<span title="[BJCORD] 결과를 디스코드에 성공적으로 전달했습니다."> ✔️</span>';
+            if (statusCell) {
+              if (success > 0 && failed === 0) {
+                statusCell.innerHTML +=
+                  '<span title="[BJCORD] 결과를 디스코드에 성공적으로 전달했습니다."> ✔️</span>';
+              } else {
+                if (failed !== 0)
+                  statusCell.innerHTML +=
+                    '<span title="[BJCORD] 결과를 디스코드에 전달하는데 실패했습니다. 자세한 내용은 로그를 참고해주세요."> ❌</span>';
+              }
             } else {
-              if (failed !== 0) statusCell.innerHTML += '<span title="[BJCORD] 결과를 디스코드에 전달하는데 실패했습니다. 자세한 내용은 로그를 참고해주세요."> ❌</span>';
+              logErr("Status cell not found. Cannot append status.");
             }
           } else {
-            logErr("Status cell not found. Cannot append status.");
+            log("Emoji display is disabled. Skip.");
           }
+
+          const endTime = new Date().getTime();
+          log("Took " + (endTime - startTime) + "ms");
         })();
       }
     }
