@@ -127,9 +127,9 @@ function watch() {
 
           if (statusCell) {
             if (success > 0 && failed === 0) {
-              statusCell.innerHTML += " ✔️";
+              statusCell.innerHTML += '<span title="[BJCORD] 결과를 디스코드에 성공적으로 전달했습니다."> ✔️</span>';
             } else {
-              if (failed !== 0) statusCell.innerHTML += " ❌";
+              if (failed !== 0) statusCell.innerHTML += '<span title="[BJCORD] 결과를 디스코드에 전달하는데 실패했습니다. 자세한 내용은 로그를 참고해주세요."> ❌</span>';
             }
           } else {
             logErr("Status cell not found. Cannot append status.");
