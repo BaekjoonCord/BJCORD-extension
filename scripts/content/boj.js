@@ -40,7 +40,11 @@ function watch() {
       const { username, resultCategory } = data;
 
       if (username == getHandle()) {
-        if (resultCategory == "judging") {
+        if (
+          resultCategory === "judging" ||
+          resultCategory === "wait" ||
+          resultCategory === "compile"
+        ) {
           if (!isJudging) {
             isJudging = true;
             judgeStartTime = new Date().getTime();
@@ -112,8 +116,26 @@ function watch() {
           const endTime = new Date().getTime();
 
           log("Took " + (endTime - startTime) + "ms");
+
+          /**  메시지 전송 결과에 따라 체크 또는 X 표시
+           * 모든 웹훅이 정상 작동되면 체크 표시
+           * 웹훅이 아무것도 등록이 안된 경우에는 X로 표시
+           */
+          const statusCell = document.querySelector(
+            "span.result-text.result-ac"
+          );
+
+          if (statusCell) {
+            if (success > 0 && failed === 0) {
+              statusCell.innerHTML += " ✔️";
+            } else {
+              if (failed !== 0) statusCell.innerHTML += " ❌";
+            }
+          } else {
+            logErr("Status cell not found. Cannot append status.");
+          }
         })();
       }
     }
-  }, 1000);
+  }, 100);
 }
