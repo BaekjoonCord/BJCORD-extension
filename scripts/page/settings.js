@@ -1,7 +1,12 @@
 /**
- * @typedef {Object} Webhook 웹훅 리스트
+ * @typedef {Object[]} Webhook 웹훅 리스트
  */
 const webhooks = [];
+
+/**
+ * 웹훅을 전송한 후 결과 이모지를 표시할지 여부
+ */
+let showEmoji = true;
 
 /**
  * 렌더링을 수행합니다.
@@ -91,7 +96,7 @@ async function add(name, url) {
 }
 
 /**
- * chrome sync에서 웹훅 목록을 불러옵니다.
+ * chrome sync에서 웹훅 목록과 이모지 표시 여부를 불러옵니다.
  * webhooks 배열에 저장합니다.
  */
 async function load() {
@@ -101,6 +106,35 @@ async function load() {
   }
   console.log("Webhooks loaded");
   console.log(data);
+
+  showEmoji = await getShowEmoji();
+  document.getElementById("cb-show-emoji").checked = showEmoji;
+
+  console.log("Show emoji: " + showEmoji);
+}
+
+/**
+ * 웹훅을 전송한 후 결과 이모지를 표시할지 여부를 반환합니다.
+ * 설정이 없는 경우 기본값은 true입니다.
+ *
+ * @returns {Promise<boolean>} 웹훅을 전송한 후 결과 이모지를 표시할지 여부
+ */
+async function getShowEmoji() {
+  const data = await chrome.storage.sync.get("showEmoji");
+
+  if (data.showEmoji === false || data.showEmoji === true) {
+    return data.showEmoji;
+  } else {
+    await chrome.storage.sync.set({ showEmoji: true });
+    return true;
+  }
+}
+
+async function toogleShowEmoji() {
+  showEmoji = !showEmoji;
+  await chrome.storage.sync.set({ showEmoji });
+  document.getElementById("cb-show-emoji").checked = showEmoji;
+  console.log("Show emoji set to " + showEmoji);
 }
 
 /**
@@ -125,6 +159,9 @@ async function init() {
 
   await load();
   render();
+
+  const cbShowEmoji = document.getElementById("cb-show-emoji");
+  cbShowEmoji.addEventListener("change", toogleShowEmoji);
 }
 
 document.addEventListener("DOMContentLoaded", init);
