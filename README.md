@@ -63,7 +63,7 @@
 <br>
 
 **3. 백준을 푸세요! 그리고 맞춘 문제를 공유하세요!**
-|![screenshot07.png](assets/readme_img/screenshot07.png)|![screenshot08.png](assets/readme_img/screenshot08.png)|
+|![screenshot09.png](assets/readme_img/screenshot09.png)|<img src="assets/readme_img/screenshot08.png" width="500"/>|
 |:---:|:---:|
 |맞은 문제를 인식합니다|메세지는 이런식으로 보내집니다|
 
