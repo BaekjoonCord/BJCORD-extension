@@ -16,18 +16,29 @@
     </div>
     <div class="webhook-container">
       <div class="webhook-main">
-        <div class="webhook-list" id="webhook-list">
-        </div>
+        <div class="webhook-list" id="webhook-list"></div>
       </div>
-      <div class="webhook-bottom">
-        <input
-          type="text"
-          placeholder="이름"
-          class="name-input"
-          id="name-input"
-        />
-        <input type="text" placeholder="URL" class="url-input" id="url-input" />
-        <button id="add-webhook">추가</button>
+      <div>
+        <div class="webhook-bottom">
+          <input
+            type="text"
+            placeholder="이름"
+            class="name-input"
+            id="name-input"
+          />
+          <input
+            type="text"
+            placeholder="URL"
+            class="url-input"
+            id="url-input"
+          />
+          <button id="add-webhook">추가</button>
+        </div>
+
+        <div class="show-emoji">
+          <input type="checkbox" id="cb-show-emoji" />
+          <label for="cb-show-emoji">웹훅 전송 완료 이모지 표시</label>
+        </div>
       </div>
     </div>
   </body>

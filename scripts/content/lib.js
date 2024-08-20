@@ -403,7 +403,7 @@ const getColor = (tier) => {
  * service worker를 통해 solved.ac의 API를 호출하여 문제 데이터를 가져옵니다.
  *
  * @param {number} id 문제 번호
- * @returns {Promise<Object>} 문제 데이터를 반환합니다.
+ * @returns {Promise<object>} 문제 데이터를 반환합니다.
  */
 async function getProblemData(id) {
   return chrome.runtime.sendMessage({
@@ -417,9 +417,26 @@ async function getProblemData(id) {
  * 크롬 스토리지에 저장된 웹훅 목록을 불러옵니다.
  * 각 웹훅 객체는 `{name, url, enabled}`로 구성됩니다.
  *
- * @returns {Array<Object>} 웹훅 목록을 반환합니다.
+ * @returns {Promise<Array<object>>} 웹훅 목록을 반환합니다.
  */
 async function getWebhooks() {
   const data = await chrome.storage.sync.get("webhooks");
   return data.webhooks || [];
+}
+
+/**
+ * 크롬 스토리지에서 결과 이모지 표시 여부를 불러옵니다.
+ * 설정이 없다면 true로 설정합니다.
+ *
+ * @returns {Promise<boolean>} 웹훅을 전송한 후 결과 이모지를 표시할지 여부
+ */
+async function getShowEmoji() {
+  const data = await chrome.storage.sync.get("showEmoji");
+
+  if (data.showEmoji === false || data.showEmoji === true) {
+    return data.showEmoji;
+  } else {
+    await chrome.storage.sync.set({ showEmoji: true });
+    return true;
+  }
 }
