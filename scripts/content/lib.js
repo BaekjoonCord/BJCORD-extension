@@ -457,3 +457,14 @@ async function getWebhookFirstAcceptOnly() {
     return true;
   }
 }
+
+/**
+ * 유저가 이미 해당 문제를 이미 맞췄는지의 여부를 반환합니다.
+ *
+ * @returns {boolean} 유저가 이미 문제를 맞췄는지의 여부
+ */
+function isUserAlreadyAccepted() {
+  const acceptedProblemTitleTooltip = document.querySelector('a.problem_title.tooltip-click.result-ac');
+  
+  return !!acceptedProblemTitleTooltip;
+}
