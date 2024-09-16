@@ -456,7 +456,7 @@ async function getWebhookFirstAcceptOnly() {
   ) {
     return data.webhookFirstAcceptOnly;
   } else {
-    await chrome.storage.sync.set({ webhookFirstAcceptOnly: true });
+    await chrome.storage.sync.set({ webhookFirstAcceptOnly: false });
     return true;
   }
 }
