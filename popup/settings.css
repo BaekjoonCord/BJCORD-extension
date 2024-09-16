@@ -137,8 +137,9 @@
   gap: 10px;
 }
 
-.show-emoji {
+.checkbox-container {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-bottom: 2px;
 }
