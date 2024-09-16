@@ -440,3 +440,20 @@ async function getShowEmoji() {
     return true;
   }
 }
+
+/**
+ * 처음으로 맞춘 문제에 한해서만 웹훅을 전송할지 여부를 반환합니다.
+ * 설정이 없다면 true로 설정합니다.
+ *
+ * @returns {Promise<boolean>} 처음으로 맞춘 문제에 한해서만 웹훅을 전송할지 여부
+ */
+async function getWebhookFirstAcceptOnly() {
+  const data = await chrome.storage.sync.get("webhookFirstAcceptOnly");
+
+  if (data.webhookFirstAcceptOnly === false || data.webhookFirstAcceptOnly === true) {
+    return data.webhookFirstAcceptOnly;
+  } else {
+    await chrome.storage.sync.set({ webhookFirstAcceptOnly: true });
+    return true;
+  }
+}
