@@ -24,7 +24,7 @@ let isJudging = false;
 let judgeStartTime = 0;
 
 /**
- * 1초마다 제출 결과를 확인한다. 제출 결과가 AC인 경우, Discord로 메시지를 전송한다.
+ * 100ms 마다 제출 결과를 확인한다. 제출 결과가 AC인 경우, Discord로 메시지를 전송한다.
  */
 async function watch() {
   if (isUserAlreadyAccepted() && (await getWebhookFirstAcceptOnly())) {
@@ -32,7 +32,6 @@ async function watch() {
   }
 
   const interval = setInterval(() => {
-
     const table = getResultTable();
     if (!table || table.length == 0) return;
 
