@@ -440,3 +440,36 @@ async function getShowEmoji() {
     return true;
   }
 }
+
+/**
+ * 처음으로 맞춘 문제에 한해서만 웹훅을 전송할지 여부를 반환합니다.
+ * 설정이 없다면 true로 설정합니다.
+ *
+ * @returns {Promise<boolean>} 처음으로 맞춘 문제에 한해서만 웹훅을 전송할지 여부
+ */
+async function getWebhookFirstAcceptOnly() {
+  const data = await chrome.storage.sync.get("webhookFirstAcceptOnly");
+
+  if (
+    data.webhookFirstAcceptOnly === false ||
+    data.webhookFirstAcceptOnly === true
+  ) {
+    return data.webhookFirstAcceptOnly;
+  } else {
+    await chrome.storage.sync.set({ webhookFirstAcceptOnly: false });
+    return true;
+  }
+}
+
+/**
+ * 유저가 이미 해당 문제를 이미 맞췄는지의 여부를 반환합니다.
+ *
+ * @returns {boolean} 유저가 이미 문제를 맞췄는지의 여부
+ */
+function isUserAlreadyAccepted() {
+  const acceptedProblemTitleTooltip = document.querySelector(
+    "a.problem_title.tooltip-click.result-ac"
+  );
+
+  return !!acceptedProblemTitleTooltip;
+}

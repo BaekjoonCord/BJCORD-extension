@@ -9,6 +9,11 @@ const webhooks = [];
 let showEmoji = true;
 
 /**
+ * 문제를 처음으로 맞춘 경우에만 웹훅을 전송할지 여부
+ */
+let webhookFirstAcceptOnly = true;
+
+/**
  * 렌더링을 수행합니다.
  * 로딩된 웹훅 목록을 화면에 렌더링하고, 삭제 버튼을 추가합니다.
  * 삭제 버튼을 클릭하면 해당 웹훅을 삭제합니다.
@@ -111,6 +116,12 @@ async function load() {
   document.getElementById("cb-show-emoji").checked = showEmoji;
 
   console.log("Show emoji: " + showEmoji);
+
+  webhookFirstAcceptOnly = await getWebhookFirstAcceptOnly();
+  document.getElementById("cb-webhook-first-accept-only").checked =
+    webhookFirstAcceptOnly;
+
+  console.log("Show webhook first accept only: " + webhookFirstAcceptOnly);
 }
 
 /**
@@ -130,11 +141,39 @@ async function getShowEmoji() {
   }
 }
 
+/**
+ * 처음으로 맞춘 문제에 한해서만 웹훅을 전송할지 여부를 반환합니다.
+ * 설정이 없는 경우 기본값은 true입니다.
+ *
+ * @returns {Promise<boolean>} 처음으로 맞춘 문제에 한해서만 웹훅을 전송할지 여부
+ */
+async function getWebhookFirstAcceptOnly() {
+  const data = await chrome.storage.sync.get("webhookFirstAcceptOnly");
+
+  if (
+    data.webhookFirstAcceptOnly === false ||
+    data.webhookFirstAcceptOnly === true
+  ) {
+    return data.webhookFirstAcceptOnly;
+  } else {
+    await chrome.storage.sync.set({ webhookFirstAcceptOnly: true });
+    return true;
+  }
+}
+
 async function toogleShowEmoji() {
   showEmoji = !showEmoji;
   await chrome.storage.sync.set({ showEmoji });
   document.getElementById("cb-show-emoji").checked = showEmoji;
   console.log("Show emoji set to " + showEmoji);
+}
+
+async function toggleWebhookFirstAcceptOnly() {
+  webhookFirstAcceptOnly = !webhookFirstAcceptOnly;
+  await chrome.storage.sync.set({ webhookFirstAcceptOnly });
+  document.getElementById("cb-webhook-first-accept-only").checked =
+    webhookFirstAcceptOnly;
+  console.log("Webhook first accept only set to " + webhookFirstAcceptOnly);
 }
 
 /**
@@ -162,6 +201,14 @@ async function init() {
 
   const cbShowEmoji = document.getElementById("cb-show-emoji");
   cbShowEmoji.addEventListener("change", toogleShowEmoji);
+
+  const cbWebhookFirstAcceptOnly = document.getElementById(
+    "cb-webhook-first-accept-only"
+  );
+  cbWebhookFirstAcceptOnly.addEventListener(
+    "change",
+    toggleWebhookFirstAcceptOnly
+  );
 }
 
 document.addEventListener("DOMContentLoaded", init);

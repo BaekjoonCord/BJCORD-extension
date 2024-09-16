@@ -24,9 +24,13 @@ let isJudging = false;
 let judgeStartTime = 0;
 
 /**
- * 1초마다 제출 결과를 확인한다. 제출 결과가 AC인 경우, Discord로 메시지를 전송한다.
+ * 100ms 마다 제출 결과를 확인한다. 제출 결과가 AC인 경우, Discord로 메시지를 전송한다.
  */
-function watch() {
+async function watch() {
+  if (isUserAlreadyAccepted() && (await getWebhookFirstAcceptOnly())) {
+    return;
+  }
+
   const interval = setInterval(() => {
     const table = getResultTable();
     if (!table || table.length == 0) return;
@@ -115,7 +119,8 @@ function watch() {
           if (failed > 0) logErr(failed + " webhooks failed to send message.");
 
           if (await getShowEmoji()) {
-            /**  메시지 전송 결과에 따라 체크 또는 X 표시
+            /*
+             * 메시지 전송 결과에 따라 체크 또는 X 표시
              * 모든 웹훅이 정상 작동되면 체크 표시
              * 웹훅이 아무것도 등록이 안된 경우에는 X로 표시
              */
