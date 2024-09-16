@@ -450,7 +450,10 @@ async function getShowEmoji() {
 async function getWebhookFirstAcceptOnly() {
   const data = await chrome.storage.sync.get("webhookFirstAcceptOnly");
 
-  if (data.webhookFirstAcceptOnly === false || data.webhookFirstAcceptOnly === true) {
+  if (
+    data.webhookFirstAcceptOnly === false ||
+    data.webhookFirstAcceptOnly === true
+  ) {
     return data.webhookFirstAcceptOnly;
   } else {
     await chrome.storage.sync.set({ webhookFirstAcceptOnly: true });
@@ -464,7 +467,9 @@ async function getWebhookFirstAcceptOnly() {
  * @returns {boolean} 유저가 이미 문제를 맞췄는지의 여부
  */
 function isUserAlreadyAccepted() {
-  const acceptedProblemTitleTooltip = document.querySelector('a.problem_title.tooltip-click.result-ac');
-  
+  const acceptedProblemTitleTooltip = document.querySelector(
+    "a.problem_title.tooltip-click.result-ac"
+  );
+
   return !!acceptedProblemTitleTooltip;
 }

@@ -118,7 +118,8 @@ async function load() {
   console.log("Show emoji: " + showEmoji);
 
   webhookFirstAcceptOnly = await getWebhookFirstAcceptOnly();
-  document.getElementById("cb-webhook-first-accept-only").checked = webhookFirstAcceptOnly;
+  document.getElementById("cb-webhook-first-accept-only").checked =
+    webhookFirstAcceptOnly;
 
   console.log("Show webhook first accept only: " + webhookFirstAcceptOnly);
 }
@@ -149,7 +150,10 @@ async function getShowEmoji() {
 async function getWebhookFirstAcceptOnly() {
   const data = await chrome.storage.sync.get("webhookFirstAcceptOnly");
 
-  if (data.webhookFirstAcceptOnly === false || data.webhookFirstAcceptOnly === true) {
+  if (
+    data.webhookFirstAcceptOnly === false ||
+    data.webhookFirstAcceptOnly === true
+  ) {
     return data.webhookFirstAcceptOnly;
   } else {
     await chrome.storage.sync.set({ webhookFirstAcceptOnly: true });
@@ -167,7 +171,8 @@ async function toogleShowEmoji() {
 async function toggleWebhookFirstAcceptOnly() {
   webhookFirstAcceptOnly = !webhookFirstAcceptOnly;
   await chrome.storage.sync.set({ webhookFirstAcceptOnly });
-  document.getElementById("cb-webhook-first-accept-only").checked = webhookFirstAcceptOnly;
+  document.getElementById("cb-webhook-first-accept-only").checked =
+    webhookFirstAcceptOnly;
   console.log("Webhook first accept only set to " + webhookFirstAcceptOnly);
 }
 
@@ -200,7 +205,10 @@ async function init() {
   const cbWebhookFirstAcceptOnly = document.getElementById(
     "cb-webhook-first-accept-only"
   );
-  cbWebhookFirstAcceptOnly.addEventListener("change", toggleWebhookFirstAcceptOnly);
+  cbWebhookFirstAcceptOnly.addEventListener(
+    "change",
+    toggleWebhookFirstAcceptOnly
+  );
 }
 
 document.addEventListener("DOMContentLoaded", init);
