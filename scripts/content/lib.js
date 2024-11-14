@@ -251,9 +251,11 @@ async function getWebhookMessage(
       {
         title: `[${bj_level[solved.level]}] ${problemId}번: ${solved.titleKo}`,
         url: `https://www.acmicpc.net/problem/${problemId}`,
-        description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n태그: ||${solved.tags
-          .map(getTagName)
-          .join(", ")}||`,
+        description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n${
+          solved.tags.length > 0
+            ? `태그: ||${solved.tags.map(getTagName).join(", ")}||`
+            : ""
+        }`,
         color: getColor(bj_level[solved.level].split(" ")[0].toLowerCase()),
         fields: [
           {
