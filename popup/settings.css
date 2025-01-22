@@ -143,3 +143,11 @@
   gap: 10px;
   margin-bottom: 2px;
 }
+
+.wh-warn {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 0.7rem;
+  margin-bottom: -0.5rem;
+  color: rgb(223, 223, 223);
+}
