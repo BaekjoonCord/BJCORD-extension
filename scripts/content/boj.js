@@ -83,7 +83,7 @@ async function watch() {
         log("Sending message to Discord...");
         (async () => {
           const startTime = new Date().getTime();
-          const msg = await getWebhookMessage(
+          const getMsg = await getWebhookMessage(
             getHandle(),
             data.submissionId,
             data.problemId,
@@ -107,7 +107,7 @@ async function watch() {
           let failed = 0;
           for (const webhook of enabled) {
             try {
-              await sendMessage(msg, webhook.url);
+              await sendMessage(getMsg(webhook.displayName), webhook.url);
               success++;
             } catch (e) {
               logErr(e);
