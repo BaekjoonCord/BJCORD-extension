@@ -55,7 +55,7 @@
 }
 
 .webhook-bottom input {
-  padding: 0 10px;
+  padding: 5px;
 }
 
 .name-input {
@@ -63,7 +63,11 @@
 }
 
 .url-input {
-  width: 70%;
+  width: 50%;
+}
+
+.display-name-input {
+  width: 30%;
 }
 
 .webhook-bottom input:focus {
@@ -114,6 +118,7 @@
   border: none;
   border-radius: 2px;
 }
+
 .webhook-delete:after {
   content: "\00d7";
   font-size: medium;
