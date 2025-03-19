@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+body {
+  background-color: #1e2124;
+  color: white;
+}
+
 .flex {
   display: flex;
 }
@@ -55,7 +60,15 @@
 }
 
 .webhook-bottom input {
-  padding: 5px;
+  padding: 5px 10px;
+  background-color: #2f3136;
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
+
+.webhook-bottom input::placeholder {
+  color: rgb(196, 196, 196);
 }
 
 .name-input {
@@ -148,7 +161,7 @@
 .webhook-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
 }
 
 .checkbox-container {
@@ -164,4 +177,15 @@
   margin-top: 0.7rem;
   margin-bottom: -0.5rem;
   color: rgb(223, 223, 223);
+}
+
+.webhook-list-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
+  background-color: #1e1f22;
+  padding: 10px;
+  border-radius: 5px;
 }
