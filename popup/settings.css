@@ -116,6 +116,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  align-content: center;
 }
 
 .webhook-url {
@@ -125,6 +126,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  align-content: center;
 }
 
 .webhook-display-name {
@@ -134,6 +136,7 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  align-content: center;
 }
 
 .webhook-delete {

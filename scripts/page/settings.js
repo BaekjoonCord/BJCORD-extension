@@ -22,6 +22,7 @@ function render() {
   const createEditableSpan = (className, text, onSave) => {
     const span = document.createElement("span");
     span.classList.add(className);
+    span.classList.add("edit-span");
     span.textContent = text;
 
     span.addEventListener("click", () => {
