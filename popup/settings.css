@@ -34,7 +34,8 @@
   justify-content: space-between;
   gap: 10px;
   min-height: 400px;
-  width: 600px;
+  max-width: 867px;
+  width: 100%;
   overflow: auto;
   background-color: #424549;
   color: white;
@@ -44,7 +45,7 @@
 
 .webhook-bottom {
   display: flex;
-  gap: 10px;
+  gap: 0.2rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
