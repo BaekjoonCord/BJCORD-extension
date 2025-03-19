@@ -104,7 +104,15 @@
 }
 
 .webhook-url {
-  width: 75%;
+  width: 50%;
+  padding-right: 5%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webhook-display-name {
+  width: 25%;
   padding-right: 5%;
   overflow: hidden;
   text-overflow: ellipsis;

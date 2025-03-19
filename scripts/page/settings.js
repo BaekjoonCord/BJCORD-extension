@@ -31,6 +31,10 @@ function render() {
     webhookUrl.classList.add("webhook-url");
     webhookUrl.textContent = webhook.url;
 
+    const displayName = document.createElement("span");
+    displayName.classList.add("webhook-display-name");
+    displayName.textContent = webhook.displayName || "";
+
     const webhookDelete = document.createElement("button");
     webhookDelete.classList.add("webhook-delete");
     webhookDelete.addEventListener("click", () => {
@@ -39,6 +43,7 @@ function render() {
 
     webhookElement.appendChild(webhookName);
     webhookElement.appendChild(webhookUrl);
+    webhookElement.appendChild(displayName);
     webhookElement.appendChild(webhookDelete);
 
     return webhookElement;
@@ -61,6 +66,7 @@ function render() {
 function clearInputs() {
   document.getElementById("name-input").value = "";
   document.getElementById("url-input").value = "";
+  document.getElementById("display-name-input").value = "";
 }
 
 /**
@@ -69,8 +75,9 @@ function clearInputs() {
 function addWebhook() {
   const name = document.getElementById("name-input").value;
   const url = document.getElementById("url-input").value;
+  const displayName = document.getElementById("display-name-input").value || "";
 
-  add(name, url);
+  add(name, url, displayName);
   clearInputs();
 }
 
@@ -91,10 +98,11 @@ async function remove(index) {
  *
  * @param {string} name 웹훅 이름
  * @param {string} url 웹훅 URL
+ * @param {string | '' | undefined} displayName 표시 이름. 없는 경우 빈 문자열
  */
-async function add(name, url) {
+async function add(name, url, displayName) {
   if (name === "" || url === "") return;
-  webhooks.push({ name, url, enabled: true });
+  webhooks.push({ name, url, enabled: true, displayName });
   render();
   await chrome.storage.sync.set({ webhooks });
   console.log("Webhook added");
@@ -185,12 +193,18 @@ async function init() {
 
   const nameInput = document.getElementById("name-input");
   const urlInput = document.getElementById("url-input");
+  const displayInput = document.getElementById("display-name-input");
   nameInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       urlInput.focus();
     }
   });
   urlInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      displayInput.focus();
+    }
+  });
+  displayInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       addWebhook();
     }
