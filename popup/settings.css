@@ -100,6 +100,7 @@ body {
 }
 
 .webhook {
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -110,6 +111,7 @@ body {
 
 .webhook-name {
   width: 20%;
+  height: 100%;
   padding-right: 3%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -118,6 +120,7 @@ body {
 
 .webhook-url {
   width: 50%;
+  height: 100%;
   padding-right: 5%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -126,6 +129,7 @@ body {
 
 .webhook-display-name {
   width: 25%;
+  height: 100%;
   padding-right: 5%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -188,4 +192,25 @@ body {
   background-color: #1e1f22;
   padding: 10px;
   border-radius: 5px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #bdbdbd;
+  margin: 1rem 0;
+}
+
+.edit-input {
+  padding: 1px 1px;
+  background-color: #2f3136;
+  color: white;
+  border: none;
+  border: 1px solid #595a5f;
+  border-radius: 2px;
+  font-size: small;
+  margin: 0 0.5rem;
+}
+
+.edit-input:focus {
+  outline: none;
 }

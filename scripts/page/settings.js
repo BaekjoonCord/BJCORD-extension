@@ -29,6 +29,7 @@ function render() {
       input.type = "text";
       input.value = span.textContent;
       input.classList.add(className);
+      input.classList.add("edit-input");
 
       input.addEventListener("blur", () => {
         span.textContent = input.value;
