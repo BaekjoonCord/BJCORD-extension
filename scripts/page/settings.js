@@ -19,21 +19,67 @@ let webhookFirstAcceptOnly = true;
  * 삭제 버튼을 클릭하면 해당 웹훅을 삭제합니다.
  */
 function render() {
+  const createEditableSpan = (className, text, onSave) => {
+    const span = document.createElement("span");
+    span.classList.add(className);
+    span.textContent = text;
+
+    span.addEventListener("click", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = span.textContent;
+      input.classList.add(className);
+
+      input.addEventListener("blur", () => {
+        span.textContent = input.value;
+        onSave(input.value);
+        span.style.display = "inline";
+        input.replaceWith(span);
+      });
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          input.blur();
+        }
+      });
+
+      span.replaceWith(input);
+      input.focus();
+    });
+
+    return span;
+  };
+
   const wh = webhooks.map((webhook, i) => {
     const webhookElement = document.createElement("div");
     webhookElement.classList.add("webhook");
 
-    const webhookName = document.createElement("span");
-    webhookName.classList.add("webhook-name");
-    webhookName.textContent = webhook.name;
+    const webhookName = createEditableSpan(
+      "webhook-name",
+      webhook.name,
+      (value) => {
+        webhooks[i].name = value;
+        chrome.storage.sync.set({ webhooks });
+      }
+    );
 
-    const webhookUrl = document.createElement("span");
-    webhookUrl.classList.add("webhook-url");
-    webhookUrl.textContent = webhook.url;
+    const webhookUrl = createEditableSpan(
+      "webhook-url",
+      webhook.url,
+      (value) => {
+        webhooks[i].url = value;
+        chrome.storage.sync.set({ webhooks });
+      }
+    );
 
-    const displayName = document.createElement("span");
-    displayName.classList.add("webhook-display-name");
-    displayName.textContent = webhook.displayName || "";
+    const displayName = createEditableSpan(
+      "webhook-display-name",
+      webhook.displayName || "",
+      (value) => {
+        webhooks[i].displayName = value;
+        chrome.storage.sync.set({ webhooks });
+      }
+    );
 
     const webhookDelete = document.createElement("button");
     webhookDelete.classList.add("webhook-delete");
