@@ -19,17 +19,69 @@ let webhookFirstAcceptOnly = true;
  * 삭제 버튼을 클릭하면 해당 웹훅을 삭제합니다.
  */
 function render() {
+  const createEditableSpan = (className, text, onSave) => {
+    const span = document.createElement("span");
+    span.classList.add(className);
+    span.classList.add("edit-span");
+    span.textContent = text;
+
+    span.addEventListener("click", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = span.textContent;
+      input.classList.add(className);
+      input.classList.add("edit-input");
+
+      input.addEventListener("blur", () => {
+        span.textContent = input.value;
+        onSave(input.value);
+        span.style.display = "inline";
+        input.replaceWith(span);
+      });
+
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          input.blur();
+        }
+      });
+
+      span.replaceWith(input);
+      input.focus();
+    });
+
+    return span;
+  };
+
   const wh = webhooks.map((webhook, i) => {
     const webhookElement = document.createElement("div");
     webhookElement.classList.add("webhook");
 
-    const webhookName = document.createElement("span");
-    webhookName.classList.add("webhook-name");
-    webhookName.textContent = webhook.name;
+    const webhookName = createEditableSpan(
+      "webhook-name",
+      webhook.name,
+      (value) => {
+        webhooks[i].name = value;
+        chrome.storage.sync.set({ webhooks });
+      }
+    );
 
-    const webhookUrl = document.createElement("span");
-    webhookUrl.classList.add("webhook-url");
-    webhookUrl.textContent = webhook.url;
+    const webhookUrl = createEditableSpan(
+      "webhook-url",
+      webhook.url,
+      (value) => {
+        webhooks[i].url = value;
+        chrome.storage.sync.set({ webhooks });
+      }
+    );
+
+    const displayName = createEditableSpan(
+      "webhook-display-name",
+      webhook.displayName || "",
+      (value) => {
+        webhooks[i].displayName = value;
+        chrome.storage.sync.set({ webhooks });
+      }
+    );
 
     const webhookDelete = document.createElement("button");
     webhookDelete.classList.add("webhook-delete");
@@ -39,6 +91,7 @@ function render() {
 
     webhookElement.appendChild(webhookName);
     webhookElement.appendChild(webhookUrl);
+    webhookElement.appendChild(displayName);
     webhookElement.appendChild(webhookDelete);
 
     return webhookElement;
@@ -61,6 +114,7 @@ function render() {
 function clearInputs() {
   document.getElementById("name-input").value = "";
   document.getElementById("url-input").value = "";
+  document.getElementById("display-name-input").value = "";
 }
 
 /**
@@ -69,8 +123,9 @@ function clearInputs() {
 function addWebhook() {
   const name = document.getElementById("name-input").value;
   const url = document.getElementById("url-input").value;
+  const displayName = document.getElementById("display-name-input").value || "";
 
-  add(name, url);
+  add(name, url, displayName);
   clearInputs();
 }
 
@@ -91,10 +146,11 @@ async function remove(index) {
  *
  * @param {string} name 웹훅 이름
  * @param {string} url 웹훅 URL
+ * @param {string | '' | undefined} displayName 표시 이름. 없는 경우 빈 문자열
  */
-async function add(name, url) {
+async function add(name, url, displayName) {
   if (name === "" || url === "") return;
-  webhooks.push({ name, url, enabled: true });
+  webhooks.push({ name, url, enabled: true, displayName });
   render();
   await chrome.storage.sync.set({ webhooks });
   console.log("Webhook added");
@@ -185,12 +241,18 @@ async function init() {
 
   const nameInput = document.getElementById("name-input");
   const urlInput = document.getElementById("url-input");
+  const displayInput = document.getElementById("display-name-input");
   nameInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       urlInput.focus();
     }
   });
   urlInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      displayInput.focus();
+    }
+  });
+  displayInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       addWebhook();
     }

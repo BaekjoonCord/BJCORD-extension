@@ -23,7 +23,7 @@ function getHandle() {
  * @param {*} text 로그에 출력할 값
  */
 function log(text) {
-  console.log("[BJCORD]", text);
+  console.log("[BJCORD-dev]", text);
 }
 
 /**
@@ -218,7 +218,7 @@ function getTimeDifference(timestamp) {
  * @param {string} resultText 결과 텍스트
  * @param {string} timestamp 제출한 시간
  * @param {number} attemps 시도 횟수
- * @returns {Promise<Object>} 웹훅 메시지를 반환합니다.
+ * @returns {Promise<(displayName: string): object>} 웹훅 메시지를 반환하는 함수를 반환합니다.
  */
 async function getWebhookMessage(
   handle,
@@ -245,7 +245,7 @@ async function getWebhookMessage(
     return display[0].name;
   };
 
-  return {
+  return (displayName) => ({
     content: null,
     embeds: [
       {
@@ -295,7 +295,7 @@ async function getWebhookMessage(
           },
         ],
         author: {
-          name: `${handle}`,
+          name: `${displayName || handle}`,
           url: `https://solved.ac/profile/${handle}`,
         },
         thumbnail: {
@@ -307,7 +307,7 @@ async function getWebhookMessage(
     avatar_url:
       "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/thumbnail.png",
     attachments: [],
-  };
+  });
 }
 
 /**
