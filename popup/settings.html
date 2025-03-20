@@ -16,9 +16,18 @@
     </div>
     <div class="webhook-container">
       <div class="webhook-main">
+        <div class="webhook-list-header">
+          <div class="webhook-name">웹훅 이름</div>
+          <div class="webhook-url">웹훅 URL</div>
+          <div class="webhook-display-name">표시될 이름</div>
+          <!-- 삭제 버튼 -->
+          <div style="width: 5%"></div>
+        </div>
         <div class="webhook-list" id="webhook-list"></div>
       </div>
+
       <div>
+        <hr />
         <div class="webhook-bottom">
           <input
             type="text"
@@ -27,10 +36,16 @@
             id="name-input"
           />
           <input
-            type="text"
+            type="url"
             placeholder="URL (웹훅을 신뢰할 수 없는 타인에게 공유하지 마세요)"
             class="url-input"
             id="url-input"
+          />
+          <input
+            type="text"
+            placeholder="표시될 이름"
+            class="display-name-input"
+            id="display-name-input"
           />
           <button id="add-webhook">추가</button>
         </div>
