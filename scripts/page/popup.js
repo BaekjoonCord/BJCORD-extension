@@ -13,7 +13,6 @@ function injectSettingPage() {
   if (!setting) return;
 
   const id = chrome.runtime.id;
-
   setting.href = `chrome-extension://${id}/popup/settings.html`;
 }
 

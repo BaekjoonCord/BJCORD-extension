@@ -23,7 +23,7 @@ function getHandle() {
  * @param {*} text 로그에 출력할 값
  */
 function log(text) {
-  console.log("[BJCORD-dev]", text);
+  console.log("[BJCORD]", text);
 }
 
 /**
@@ -82,30 +82,39 @@ function getResultTable() {
   }
 
   const mapTableHeader = (header) => {
-    switch (header) {
+    switch (header.toLowerCase()) {
       case "문제번호":
       case "문제":
+      case "problem":
         return "problemId";
       case "난이도":
         return "level";
       case "결과":
+      case "result":
         return "result";
       case "문제내용":
         return "problemDescription";
       case "언어":
+      case "language":
         return "language";
       case "제출 번호":
+      case "solution":
         return "submissionId";
       case "아이디":
+      case "user":
         return "username";
       case "제출시간":
       case "제출한 시간":
+      case "submission time":
         return "submissionTime";
       case "시간":
+      case "time":
         return "runtime";
       case "메모리":
+      case "memory":
         return "memory";
       case "코드 길이":
+      case "length":
         return "codeLength";
       default:
         return "unknown";
