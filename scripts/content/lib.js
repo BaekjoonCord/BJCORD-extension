@@ -254,18 +254,20 @@ async function getWebhookMessage(
     return display[0].name;
   };
 
+  const tier = getProblemTier(solved);
+
   return (displayName) => ({
     content: null,
     embeds: [
       {
-        title: `[${bj_level[solved.level]}] ${problemId}번: ${solved.titleKo}`,
+        title: `[${tier}] ${problemId}번: ${solved.titleKo}`,
         url: `https://www.acmicpc.net/problem/${problemId}`,
         description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n${
           solved.tags.length > 0
             ? `태그: ||${solved.tags.map(getTagName).join(", ")}||`
             : ""
         }`,
-        color: getColor(bj_level[solved.level].split(" ")[0].toLowerCase()),
+        color: getColor(tier.split(" ")[0].toLowerCase()),
         fields: [
           {
             name: "성능",
@@ -308,7 +310,7 @@ async function getWebhookMessage(
           url: `https://solved.ac/profile/${handle}`,
         },
         thumbnail: {
-          url: getLevelImg(bj_level[solved.level]),
+          url: getLevelImg(tier),
         },
       },
     ],
@@ -322,13 +324,17 @@ async function getWebhookMessage(
 /**
  * 문제 티어에 맞는 이미지 URL을 반환합니다.
  *
- * @param {string} level 문제 티어 (Bronze V ~ Ruby I, Unrated 등)
+ * @param {string} level 문제 티어 (Bronze V ~ Ruby I, Unrated, Not Ratable)
  * @returns {string} 티어에 해당하는 이미지 URL
  */
 function getLevelImg(level) {
   const tier = level.split(" ")[0];
   if (tier == "Unrated") {
     return `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/unrated.png`;
+  }
+
+  if (level == "Not Ratable") {
+    return `https://i.ibb.co/cSh89pKb/nr.png`;
   }
 
   const step = level.split(" ")[1];
@@ -439,6 +445,7 @@ function getProblemTier(problemData) {
 
   return bj_level[level];
 }
+
 /**
  * 크롬 스토리지에 저장된 웹훅 목록을 불러옵니다.
  * 각 웹훅 객체는 `{name, url, enabled}`로 구성됩니다.
