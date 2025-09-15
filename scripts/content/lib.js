@@ -425,6 +425,21 @@ async function getProblemData(id) {
 }
 
 /**
+ * 주어진 문제의 영문 티어명을 반환합니다.
+ *
+ * @param {object} problemData 문제 데이터
+ * @returns {string} 문제의 티어 영문 (Platinum IV)
+ */
+function getProblemTier(problemData) {
+  const { level, isLevelLocked } = problemData;
+
+  if (level === 0 && isLevelLocked) {
+    return "Not Ratable";
+  }
+
+  return bj_level[level];
+}
+/**
  * 크롬 스토리지에 저장된 웹훅 목록을 불러옵니다.
  * 각 웹훅 객체는 `{name, url, enabled}`로 구성됩니다.
  *
