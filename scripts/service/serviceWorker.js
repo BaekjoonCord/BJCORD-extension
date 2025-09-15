@@ -24,7 +24,7 @@ async function getProblemData(id) {
  * @param {unknown} sendResponse chrome API instance
  * @returns {boolean} true
  */
-function handleMessge(request, sender, sendResponse) {
+function handleMessage(request, sender, sendResponse) {
   if (request.task == "solvedProblemFetch") {
     getProblemData(request.problemId).then((res) => sendResponse(res));
   }
@@ -32,4 +32,4 @@ function handleMessge(request, sender, sendResponse) {
   return true;
 }
 
-chrome.runtime.onMessage.addListener(handleMessge);
+chrome.runtime.onMessage.addListener(handleMessage);
