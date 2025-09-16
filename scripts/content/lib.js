@@ -274,7 +274,7 @@ async function getWebhookMessage(
           },
           {
             name: "언어",
-            value: `${language}`,
+            value: language || "?",
             inline: true,
           },
           {
@@ -289,7 +289,7 @@ async function getWebhookMessage(
           },
           {
             name: "코드 길이",
-            value: `${length} B`,
+            value: length ? `${length} B` : "?",
             inline: true,
           },
           {
