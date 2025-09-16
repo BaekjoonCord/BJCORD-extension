@@ -70,6 +70,53 @@ String.prototype.unescapeHtml = function () {
 };
 
 /**
+ * BOJ 채점 테이블의 헤더를 내부적으로 사용하는 키로 매핑합니다.
+ * BOJ의 언어가 한국어 또는 영어로 설정되어 있는 경우를 모두 처리합니다.
+ *
+ * @param {string} header
+ * @returns {string} 매핑된 키
+ */
+function mapTableHeader(header) {
+  switch (header.toLowerCase()) {
+    case "문제번호":
+    case "문제":
+    case "problem":
+      return "problemId";
+    case "난이도":
+      return "level";
+    case "결과":
+    case "result":
+      return "result";
+    case "문제내용":
+      return "problemDescription";
+    case "언어":
+    case "language":
+      return "language";
+    case "제출 번호":
+    case "solution":
+      return "submissionId";
+    case "아이디":
+    case "user":
+      return "username";
+    case "제출시간":
+    case "제출한 시간":
+    case "submission time":
+      return "submissionTime";
+    case "시간":
+    case "time":
+      return "runtime";
+    case "메모리":
+    case "memory":
+      return "memory";
+    case "코드 길이":
+    case "length":
+      return "codeLength";
+    default:
+      return "unknown";
+  }
+}
+
+/**
  * 채점 테이블의 데이터를 파싱하고 반환합니다.
  * @returns {Array<Object>} 테이블의 데이터를 반환합니다.
  */
@@ -80,46 +127,6 @@ function getResultTable() {
     logErr("테이블을 찾을 수 없습니다.");
     return null;
   }
-
-  const mapTableHeader = (header) => {
-    switch (header.toLowerCase()) {
-      case "문제번호":
-      case "문제":
-      case "problem":
-        return "problemId";
-      case "난이도":
-        return "level";
-      case "결과":
-      case "result":
-        return "result";
-      case "문제내용":
-        return "problemDescription";
-      case "언어":
-      case "language":
-        return "language";
-      case "제출 번호":
-      case "solution":
-        return "submissionId";
-      case "아이디":
-      case "user":
-        return "username";
-      case "제출시간":
-      case "제출한 시간":
-      case "submission time":
-        return "submissionTime";
-      case "시간":
-      case "time":
-        return "runtime";
-      case "메모리":
-      case "memory":
-        return "memory";
-      case "코드 길이":
-      case "length":
-        return "codeLength";
-      default:
-        return "unknown";
-    }
-  };
 
   const headers = Array.from(table.rows[0].cells).map((x) =>
     mapTableHeader(x.innerText.trim())
@@ -157,10 +164,9 @@ function getResultTable() {
       }
     });
 
-    let obj = {
-      elementId: row.id,
-    };
+    let obj = { elementId: row.id };
     for (let j = 0; j < headers.length; j++) obj[headers[j]] = cells[j];
+
     obj = { ...obj, ...obj.result, ...obj.problemId };
     list.push(obj);
   }
@@ -190,6 +196,7 @@ function getTimeDifference(timestamp) {
     "11월": "November",
     "12월": "December",
   };
+
   for (let month in monthNames) {
     if (timestamp.includes(month)) {
       timestamp = timestamp.replace(month, monthNames[month]);
@@ -227,7 +234,7 @@ function getTimeDifference(timestamp) {
  * @param {string} resultText 결과 텍스트
  * @param {string} timestamp 제출한 시간
  * @param {number} attempts 시도 횟수
- * @returns {Promise<(displayName: string): object>} 웹훅 메시지를 반환하는 함수를 반환합니다.
+ * @returns {Promise<(displayName: string) => object>} 웹훅 메시지를 반환하는 함수를 반환합니다.
  */
 async function getWebhookMessage(
   handle,
@@ -243,7 +250,6 @@ async function getWebhookMessage(
   attempts
 ) {
   const solved = await getProblemData(problemId);
-  // console.log(solved);
 
   const getTagName = (tag) => {
     const key = tag.key;
@@ -382,7 +388,7 @@ async function sendMessage(message, url) {
     });
 
     if (!response.ok) {
-      throw new Error("Response was not ok");
+      throw new Error("Failed to send webhook: " + response.statusText);
     }
   } catch (err) {
     log(err);
