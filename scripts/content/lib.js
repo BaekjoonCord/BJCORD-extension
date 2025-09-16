@@ -226,7 +226,7 @@ function getTimeDifference(timestamp) {
  * @param {number} length 코드 길이 (B)
  * @param {string} resultText 결과 텍스트
  * @param {string} timestamp 제출한 시간
- * @param {number} attemps 시도 횟수
+ * @param {number} attempts 시도 횟수
  * @returns {Promise<(displayName: string): object>} 웹훅 메시지를 반환하는 함수를 반환합니다.
  */
 async function getWebhookMessage(
@@ -240,7 +240,7 @@ async function getWebhookMessage(
   length,
   resultText,
   timestamp,
-  attemps
+  attempts
 ) {
   const solved = await getProblemData(problemId);
   // console.log(solved);
@@ -281,7 +281,7 @@ async function getWebhookMessage(
           },
           {
             name: "시도한 횟수",
-            value: `${attemps} 회`,
+            value: `${attempts} 회`,
             inline: true,
           },
           {

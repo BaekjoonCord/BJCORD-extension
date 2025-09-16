@@ -73,10 +73,10 @@ async function watch() {
         log("Submission detected: " + resultCategory);
         log(data);
 
-        let attemps = 1;
+        let attempts = 1;
         for (let i = 1; i < table.length; i++) {
           if (table[i].username != username) break;
-          if (table[i].resultCategory != "ac") attemps++;
+          if (table[i].resultCategory != "ac") attempts++;
           else break;
         }
 
@@ -94,7 +94,7 @@ async function watch() {
             data.codeLength,
             data.result,
             data.submissionTime,
-            attemps
+            attempts
           );
 
           const webhooks = await getWebhooks();
