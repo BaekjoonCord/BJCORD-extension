@@ -329,12 +329,13 @@ async function getWebhookMessage(
  */
 function getLevelImg(level) {
   const tier = level.split(" ")[0];
+  const CDN = `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier`;
   if (tier == "Unrated") {
-    return `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/unrated.png`;
+    return `${CDN}/unrated.png`;
   }
 
   if (level == "Not Ratable") {
-    return `https://i.ibb.co/cSh89pKb/nr.png`;
+    return `${CDN}/not-ratable.png`;
   }
 
   const step = level.split(" ")[1];
@@ -360,9 +361,7 @@ function getLevelImg(level) {
       stepNum = 0;
   }
 
-  return `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/${
-    tier.toLowerCase() + stepNum
-  }.png`;
+  return `${CDN}/${tier.toLowerCase() + stepNum}.png`;
 }
 
 /**
