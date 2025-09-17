@@ -1,5 +1,5 @@
 /**
- * @typedef {Object[]} Webhook 웹훅 리스트
+ * @typedef {object[]} Webhook 웹훅 리스트
  */
 const webhooks = [];
 
@@ -118,7 +118,7 @@ function clearInputs() {
 }
 
 /**
- * 새로운 웹훅츨 추가하고 chrome sync에 저장합니다.
+ * 새로운 웹훅을 추가하고 chrome sync에 저장합니다.
  */
 function addWebhook() {
   const name = document.getElementById("name-input").value;
