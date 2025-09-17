@@ -70,6 +70,53 @@ String.prototype.unescapeHtml = function () {
 };
 
 /**
+ * BOJ 채점 테이블의 헤더를 내부적으로 사용하는 키로 매핑합니다.
+ * BOJ의 언어가 한국어 또는 영어로 설정되어 있는 경우를 모두 처리합니다.
+ *
+ * @param {string} header
+ * @returns {string} 매핑된 키
+ */
+function mapTableHeader(header) {
+  switch (header.toLowerCase()) {
+    case "문제번호":
+    case "문제":
+    case "problem":
+      return "problemId";
+    case "난이도":
+      return "level";
+    case "결과":
+    case "result":
+      return "result";
+    case "문제내용":
+      return "problemDescription";
+    case "언어":
+    case "language":
+      return "language";
+    case "제출 번호":
+    case "solution":
+      return "submissionId";
+    case "아이디":
+    case "user":
+      return "username";
+    case "제출시간":
+    case "제출한 시간":
+    case "submission time":
+      return "submissionTime";
+    case "시간":
+    case "time":
+      return "runtime";
+    case "메모리":
+    case "memory":
+      return "memory";
+    case "코드 길이":
+    case "length":
+      return "codeLength";
+    default:
+      return "unknown";
+  }
+}
+
+/**
  * 채점 테이블의 데이터를 파싱하고 반환합니다.
  * @returns {Array<Object>} 테이블의 데이터를 반환합니다.
  */
@@ -80,46 +127,6 @@ function getResultTable() {
     logErr("테이블을 찾을 수 없습니다.");
     return null;
   }
-
-  const mapTableHeader = (header) => {
-    switch (header.toLowerCase()) {
-      case "문제번호":
-      case "문제":
-      case "problem":
-        return "problemId";
-      case "난이도":
-        return "level";
-      case "결과":
-      case "result":
-        return "result";
-      case "문제내용":
-        return "problemDescription";
-      case "언어":
-      case "language":
-        return "language";
-      case "제출 번호":
-      case "solution":
-        return "submissionId";
-      case "아이디":
-      case "user":
-        return "username";
-      case "제출시간":
-      case "제출한 시간":
-      case "submission time":
-        return "submissionTime";
-      case "시간":
-      case "time":
-        return "runtime";
-      case "메모리":
-      case "memory":
-        return "memory";
-      case "코드 길이":
-      case "length":
-        return "codeLength";
-      default:
-        return "unknown";
-    }
-  };
 
   const headers = Array.from(table.rows[0].cells).map((x) =>
     mapTableHeader(x.innerText.trim())
@@ -157,10 +164,9 @@ function getResultTable() {
       }
     });
 
-    let obj = {
-      elementId: row.id,
-    };
+    let obj = { elementId: row.id };
     for (let j = 0; j < headers.length; j++) obj[headers[j]] = cells[j];
+
     obj = { ...obj, ...obj.result, ...obj.problemId };
     list.push(obj);
   }
@@ -190,6 +196,7 @@ function getTimeDifference(timestamp) {
     "11월": "November",
     "12월": "December",
   };
+
   for (let month in monthNames) {
     if (timestamp.includes(month)) {
       timestamp = timestamp.replace(month, monthNames[month]);
@@ -226,8 +233,8 @@ function getTimeDifference(timestamp) {
  * @param {number} length 코드 길이 (B)
  * @param {string} resultText 결과 텍스트
  * @param {string} timestamp 제출한 시간
- * @param {number} attemps 시도 횟수
- * @returns {Promise<(displayName: string): object>} 웹훅 메시지를 반환하는 함수를 반환합니다.
+ * @param {number} attempts 시도 횟수
+ * @returns {Promise<(displayName: string) => object>} 웹훅 메시지를 반환하는 함수를 반환합니다.
  */
 async function getWebhookMessage(
   handle,
@@ -240,10 +247,9 @@ async function getWebhookMessage(
   length,
   resultText,
   timestamp,
-  attemps
+  attempts
 ) {
   const solved = await getProblemData(problemId);
-  // console.log(solved);
 
   const getTagName = (tag) => {
     const key = tag.key;
@@ -254,18 +260,20 @@ async function getWebhookMessage(
     return display[0].name;
   };
 
+  const tier = getProblemTier(solved);
+
   return (displayName) => ({
     content: null,
     embeds: [
       {
-        title: `[${bj_level[solved.level]}] ${problemId}번: ${solved.titleKo}`,
+        title: `[${tier}] ${problemId}번: ${solved.titleKo}`,
         url: `https://www.acmicpc.net/problem/${problemId}`,
         description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n${
           solved.tags.length > 0
             ? `태그: ||${solved.tags.map(getTagName).join(", ")}||`
             : ""
         }`,
-        color: getColor(bj_level[solved.level].split(" ")[0].toLowerCase()),
+        color: getColor(tier.split(" ")[0].toLowerCase()),
         fields: [
           {
             name: "성능",
@@ -274,12 +282,12 @@ async function getWebhookMessage(
           },
           {
             name: "언어",
-            value: `${language}`,
+            value: language || "?",
             inline: true,
           },
           {
             name: "시도한 횟수",
-            value: `${attemps} 회`,
+            value: `${attempts} 회`,
             inline: true,
           },
           {
@@ -289,7 +297,7 @@ async function getWebhookMessage(
           },
           {
             name: "코드 길이",
-            value: `${length} B`,
+            value: length ? `${length} B` : "?",
             inline: true,
           },
           {
@@ -308,7 +316,7 @@ async function getWebhookMessage(
           url: `https://solved.ac/profile/${handle}`,
         },
         thumbnail: {
-          url: getLevelImg(bj_level[solved.level]),
+          url: getLevelImg(tier),
         },
       },
     ],
@@ -322,13 +330,18 @@ async function getWebhookMessage(
 /**
  * 문제 티어에 맞는 이미지 URL을 반환합니다.
  *
- * @param {string} level 문제 티어 (Bronze V ~ Ruby I, Unrated 등)
+ * @param {string} level 문제 티어 (Bronze V ~ Ruby I, Unrated, Not Ratable)
  * @returns {string} 티어에 해당하는 이미지 URL
  */
 function getLevelImg(level) {
   const tier = level.split(" ")[0];
+  const CDN = `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier`;
   if (tier == "Unrated") {
-    return `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/unrated.png`;
+    return `${CDN}/unrated.png`;
+  }
+
+  if (level == "Not Ratable") {
+    return `${CDN}/not-ratable.png`;
   }
 
   const step = level.split(" ")[1];
@@ -354,9 +367,7 @@ function getLevelImg(level) {
       stepNum = 0;
   }
 
-  return `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/${
-    tier.toLowerCase() + stepNum
-  }.png`;
+  return `${CDN}/${tier.toLowerCase() + stepNum}.png`;
 }
 
 /**
@@ -377,7 +388,7 @@ async function sendMessage(message, url) {
     });
 
     if (!response.ok) {
-      throw new Error("Response was not ok");
+      throw new Error("Failed to send webhook: " + response.statusText);
     }
   } catch (err) {
     log(err);
@@ -422,6 +433,22 @@ async function getProblemData(id) {
     task: "solvedProblemFetch",
     problemId: id,
   });
+}
+
+/**
+ * 주어진 문제의 영문 티어명을 반환합니다.
+ *
+ * @param {object} problemData 문제 데이터
+ * @returns {string} 문제의 티어 영문 (Platinum IV)
+ */
+function getProblemTier(problemData) {
+  const { level, isLevelLocked } = problemData;
+
+  if (level === 0 && isLevelLocked) {
+    return "Not Ratable";
+  }
+
+  return bj_level[level];
 }
 
 /**
