@@ -1,8 +1,17 @@
 import { FaGithub } from "react-icons/fa6";
 import { IoSettingsOutline } from "react-icons/io5";
 import { SiChromewebstore } from "react-icons/si";
+import { useState } from "react";
 
 export default function PopupFooter() {
+  const [extId, setExtId] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id) {
+      setExtId(chrome.runtime.id);
+    }
+  }, []);
+
   return (
     <div className="flex justify-center gap-2">
       <a
@@ -20,7 +29,7 @@ export default function PopupFooter() {
         <SiChromewebstore className="w-6 h-6" />
       </a>
       <a
-        href="chrome-extension://ichhnkdadkmehpahpbdgcoeccfahgpdk/popup/settings.html"
+        href={`chrome-extension://${extId}/popup/settings.html`}
         target="_blank"
         rel="noreferrer"
       >
