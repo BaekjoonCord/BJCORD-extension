@@ -9,6 +9,12 @@ export default function PopupFooter() {
   useEffect(() => {
     if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id) {
       setExtId(chrome.runtime.id);
+    } else if (
+      typeof browser !== "undefined" &&
+      browser.runtime &&
+      browser.runtime.id
+    ) {
+      setExtId(browser.runtime.id);
     }
   }, []);
 
