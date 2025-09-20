@@ -1,4 +1,4 @@
-import { getCurrentBrowser } from "@/lib/browser";
+import { getCurrentBrowser, getLongVersion, getVersion } from "@/lib/browser";
 import { HOW_TO_USE_URL } from "@/lib/constants";
 import { isDev } from "@/lib/isDev";
 import cn from "@yeahx4/cn";
@@ -18,9 +18,14 @@ export default function PopupTitle({
           alt="Thumbnail"
           className={large ? "w-16 h-16" : "w-10 h-10"}
         />
-        <h1 className={cn(large ? "text-3xl" : "text-2xl", "font-semibold")}>
-          BJCORD
-        </h1>
+        <div className="flex items-start">
+          <span
+            className={cn(large ? "text-3xl" : "text-2xl", "font-semibold")}
+          >
+            BJCORD
+          </span>
+          <span className="italic text-sm text-[#999]">{getLongVersion()}</span>
+        </div>
       </div>
 
       <span className="text-center mb-2">

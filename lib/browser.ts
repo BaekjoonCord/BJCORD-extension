@@ -27,3 +27,8 @@ export const getCurrentBrowser = (): BrowserType | "unknown" => {
     return "unknown";
   }
 };
+
+export const getVersion = () => browser.runtime.getManifest().version;
+export const getName = () => browser.runtime.getManifest().name;
+export const getLongVersion = () =>
+  browser.runtime.getManifest().version_name || getVersion();
