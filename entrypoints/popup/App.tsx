@@ -5,7 +5,7 @@ import WebhookList from "@/components/popup/webhook-list";
 function App() {
   return (
     <div className="w-screen h-screen flex flex-col p-4 justify-between">
-      <PopupTitle />
+      <PopupTitle hideVersion />
       <WebhookList />
       <PopupFooter />
     </div>

@@ -6,9 +6,11 @@ import cn from "@yeahx4/cn";
 export default function PopupTitle({
   large = false,
   hideUsage = false,
+  hideVersion = false,
 }: {
   large?: boolean;
   hideUsage?: boolean;
+  hideVersion?: boolean;
 }) {
   return (
     <div className="flex flex-col">
@@ -24,7 +26,11 @@ export default function PopupTitle({
           >
             BJCORD
           </span>
-          <span className="italic text-sm text-[#999]">{getLongVersion()}</span>
+          {!hideVersion && (
+            <span className="italic text-sm text-[#999]">
+              {getLongVersion()}
+            </span>
+          )}
         </div>
       </div>
 
