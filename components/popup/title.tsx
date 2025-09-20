@@ -1,6 +1,6 @@
 import { getCurrentBrowser, getLongVersion, getVersion } from "@/lib/browser";
 import { HOW_TO_USE_URL } from "@/lib/constants";
-import { isDev } from "@/lib/isDev";
+import { isDev } from "@/lib/util";
 import cn from "@yeahx4/cn";
 
 export default function PopupTitle({
