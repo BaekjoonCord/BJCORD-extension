@@ -27,7 +27,7 @@ export default function PopupFooter() {
         <SiChromewebstore className="w-6 h-6" />
       </a>
       <a
-        href={`chrome-extension://${extId}/popup/settings.html`}
+        href={`chrome-extension://${extId}/options.html`}
         target="_blank"
         rel="noreferrer"
       >
