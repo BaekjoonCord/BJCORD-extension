@@ -1,6 +1,6 @@
 import PopupFooter from "@/components/popup/footer";
 import PopupTitle from "@/components/popup/title";
-import WebhookList from "@/components/popup/webhool-list";
+import WebhookList from "@/components/popup/webhook-list";
 
 function App() {
   return (
