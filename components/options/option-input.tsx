@@ -12,7 +12,7 @@ export default function OptionInput({
       placeholder={placeholder}
       className={cn(
         className,
-        "p-2 outline-none bg-[#2c2f33] rounded-sm h-full"
+        "py-2 px-3 outline-none bg-[#2c2f33] rounded-sm h-full"
       )}
     />
   );
