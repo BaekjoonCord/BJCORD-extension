@@ -1,3 +1,10 @@
+import {
+  SEND_FIRST_AC_ONLY_KEY,
+  SHOW_EMOJI_KEY,
+  WEBHOOK_KEY,
+} from "./constants";
+import { Webhook } from "./webhook";
+
 /**
  * 현재 확장 프로그램의 ID를 반환합니다.
  * 찾을 수 없는 경우 null을 반환합니다.
@@ -68,10 +75,54 @@ export const getName = () => browser.runtime.getManifest().name;
 export const getLongVersion = () =>
   browser.runtime.getManifest().version_name || getVersion();
 
-export interface Webhook {
-  id: string;
-  name: string;
-  url: string;
-  displayName?: string;
-  active: boolean;
-}
+/**
+ * Webhook 배열을 브라우저 동기화 스토리지에 저장합니다.
+ *
+ * @param webhooks 동기화할 Webhook 배열
+ */
+export const syncWebhooks = async (webhooks: Webhook[]) => {
+  await browser.storage.sync.set({ [WEBHOOK_KEY]: webhooks });
+};
+
+/**
+ * 브라우저 동기화 스토리지에 저장된 Webhook 배열을 반환합니다.
+ *
+ * @returns 브라우저 동기화 스토리지에 저장된 Webhook 배열. 없는 경우 빈 배열
+ */
+export const getWebhooks = async (): Promise<Webhook[]> => {
+  const storage = await browser.storage.sync.get(WEBHOOK_KEY);
+  return storage[WEBHOOK_KEY] || [];
+};
+
+/**
+ * 브라우저 동기화 스토리지에 저장된 Webhook 중 활성화된 Webhook 배열을 반환합니다.
+ *
+ * @returns 활성화된 Webhook 배열
+ */
+export const getActiveWebhooks = async (): Promise<Webhook[]> => {
+  const webhooks = await getWebhooks();
+  return webhooks.filter((wh) => wh.active);
+};
+
+/**
+ * 확장 프로그램이 처음 실행되는지 여부를 반환합니다.
+ * 웹훅, 이모지 표시 여부, 첫 AC만 전송 여부 설정이 존재하지 않는 경우(undefined)
+ * 처음 실행되는 것으로 간주합니다.
+ * 추가적인 업데이트로 인해 새로운 값이 추가된 경우에도 `true`를 반환합니다.
+ * Sync 스토리지를 초기화할 때 모든 필드를 초기화하지 않도록 주의해야 합니다.
+ *
+ * @returns 확장 프로그램이 처음 실행되는지 여부
+ */
+export const isFirstRun = async (): Promise<boolean> => {
+  const isWhUndefined = await browser.storage.sync.get(WEBHOOK_KEY);
+  const shouldShowEmoji = await browser.storage.sync.get(SHOW_EMOJI_KEY);
+  const sendFirstAcOnly = await browser.storage.sync.get(
+    SEND_FIRST_AC_ONLY_KEY
+  );
+
+  return (
+    isWhUndefined[WEBHOOK_KEY] === undefined ||
+    shouldShowEmoji[SHOW_EMOJI_KEY] === undefined ||
+    sendFirstAcOnly[SEND_FIRST_AC_ONLY_KEY] === undefined
+  );
+};
