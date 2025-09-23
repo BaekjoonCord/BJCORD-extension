@@ -33,18 +33,21 @@ export default function OptionInputField({
           placeholder="웹훅 이름"
           value={nameInput}
           onChange={setNameInput}
+          handleAddWebhook={handleAddWebhook}
         />
         <OptionInput
           className="w-[50%]"
           placeholder="웹훅 URL (신뢰할 수 없는 타인에게 공유하지 마세요)"
           value={urlInput}
           onChange={setUrlInput}
+          handleAddWebhook={handleAddWebhook}
         />
         <OptionInput
           className="w-[25%]"
           placeholder="표시될 이름"
           value={displayNameInput}
           onChange={setDisplayNameInput}
+          handleAddWebhook={handleAddWebhook}
         />
         <OptionAddBtn onClick={handleAddWebhook} />
       </div>

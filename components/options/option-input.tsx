@@ -5,11 +5,13 @@ export default function OptionInput({
   className,
   value,
   onChange,
+  handleAddWebhook,
 }: {
   placeholder?: string;
   className?: string;
   value: string;
   onChange: (value: string) => void;
+  handleAddWebhook?: () => void;
 }) {
   return (
     <input
@@ -20,6 +22,11 @@ export default function OptionInput({
       )}
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && handleAddWebhook) {
+          handleAddWebhook();
+        }
+      }}
     />
   );
 }
