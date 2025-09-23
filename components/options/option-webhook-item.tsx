@@ -1,7 +1,18 @@
-import { Webhook } from "@/lib/webhook";
+import { deleteWebhook, Webhook } from "@/lib/webhook";
 import cn from "@yeahx4/cn";
 
-export default function OptionWebhookItem({ webhook }: { webhook: Webhook }) {
+export default function OptionWebhookItem({
+  webhook,
+  handleDeleteWebhook,
+  handleUpdateWebhook,
+}: {
+  webhook: Webhook;
+  handleDeleteWebhook: (id: string) => void;
+  handleUpdateWebhook: (
+    id: string,
+    newWebhook: Partial<Omit<Webhook, "id">>
+  ) => void;
+}) {
   return (
     <div
       className={cn(
@@ -29,6 +40,7 @@ export default function OptionWebhookItem({ webhook }: { webhook: Webhook }) {
           "bg-red-500 text-white w-[5%] transition-all",
           "cursor-pointer text-center rounded-sm hover:bg-red-600"
         )}
+        onClick={() => handleDeleteWebhook(webhook.id)}
       >
         X
       </div>

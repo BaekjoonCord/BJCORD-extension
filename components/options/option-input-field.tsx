@@ -2,6 +2,7 @@ import cn from "@yeahx4/cn";
 import OptionInput from "./option-input";
 import OptionAddBtn from "./option-add-btn";
 import OptionCheckbox from "./option-checkbox";
+import { Webhook } from "@/lib/webhook";
 
 export default function OptionInputField({
   nameInput,
@@ -19,6 +20,11 @@ export default function OptionInputField({
   displayNameInput: string;
   setDisplayNameInput: (displayName: string) => void;
   handleAddWebhook: () => void;
+  handleDeleteWebhook: (id: string) => void;
+  handleUpdateWebhook: (
+    id: string,
+    newWebhook: Partial<Omit<Webhook, "id">>
+  ) => void;
 }) {
   return (
     <div className="flex flex-col gap-4">
