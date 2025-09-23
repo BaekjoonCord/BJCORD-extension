@@ -1,4 +1,6 @@
 import {
+  DEFAULT_SEND_FIRST_AC_ONLY,
+  DEFAULT_SHOW_EMOJI,
   SEND_FIRST_AC_ONLY_KEY,
   SHOW_EMOJI_KEY,
   WEBHOOK_KEY,
@@ -125,4 +127,23 @@ export const isFirstRun = async (): Promise<boolean> => {
     shouldShowEmoji[SHOW_EMOJI_KEY] === undefined ||
     sendFirstAcOnly[SEND_FIRST_AC_ONLY_KEY] === undefined
   );
+};
+
+/**
+ * 브라우저 동기화 스토리지를 초기화합니다.
+ * 웹훅, 이모지 표시 여부, 첫 AC만 전송 여부 설정이 존재하지 않는 경우(undefined)
+ * 각각 기본값으로 초기화합니다. 중간에 확장 프로그램의 버전을 업그레이드 해 몇 값이
+ * undefined인 경우, 기존 값은 유지하되 누락된 값만 기본값으로 초기화합니다.
+ */
+export const initStorage = async () => {
+  if ((await browser.storage.sync.get(WEBHOOK_KEY)) === undefined)
+    await browser.storage.sync.set({ [WEBHOOK_KEY]: [] });
+
+  if ((await browser.storage.sync.get(SHOW_EMOJI_KEY)) === undefined)
+    await browser.storage.sync.set({ [SHOW_EMOJI_KEY]: DEFAULT_SHOW_EMOJI });
+
+  if ((await browser.storage.sync.get(SEND_FIRST_AC_ONLY_KEY)) === undefined)
+    await browser.storage.sync.set({
+      [SEND_FIRST_AC_ONLY_KEY]: DEFAULT_SEND_FIRST_AC_ONLY,
+    });
 };
