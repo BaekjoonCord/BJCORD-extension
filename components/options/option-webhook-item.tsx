@@ -81,6 +81,7 @@ export default function OptionWebhookItem({
           </span>
         )}
       </div>
+
       <div
         className={cn("w-[50%] hover:cursor-text h-full flex items-center p-1")}
       >
@@ -106,6 +107,7 @@ export default function OptionWebhookItem({
           </span>
         )}
       </div>
+
       <div
         className={cn("w-[25%] hover:cursor-text h-full flex items-center p-1")}
       >
@@ -134,6 +136,7 @@ export default function OptionWebhookItem({
           </span>
         )}
       </div>
+
       <div
         className={cn(
           "bg-red-500 text-white w-[5%] transition-all",
