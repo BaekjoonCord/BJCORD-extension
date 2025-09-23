@@ -9,9 +9,15 @@ export default function OptionWebhookItem({ webhook }: { webhook: Webhook }) {
         "h-8 bg-[#2c2f33] pl-4 pr-2 rounded-sm"
       )}
     >
-      <div className="w-[20%] hover:cursor-text">{webhook.name}</div>
-      <div className="w-[50%] hover:cursor-text">{webhook.url}</div>
-      <div className="w-[25%] hover:cursor-text">{webhook.displayName}</div>
+      <div className="w-[20%] hover:cursor-text overflow-ellipsis overflow-hidden">
+        {webhook.name}
+      </div>
+      <div className="w-[50%] hover:cursor-text overflow-ellipsis overflow-hidden">
+        {webhook.url}
+      </div>
+      <div className="w-[25%] hover:cursor-text overflow-ellipsis overflow-hidden">
+        {webhook.displayName}
+      </div>
       <div
         className={cn(
           "bg-red-500 text-white w-[5%] transition-all",
