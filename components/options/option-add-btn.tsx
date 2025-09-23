@@ -1,6 +1,6 @@
 import cn from "@yeahx4/cn";
 
-export default function OptionAddBtn() {
+export default function OptionAddBtn({ onClick }: { onClick: () => void }) {
   return (
     <button
       className={cn(
@@ -8,6 +8,7 @@ export default function OptionAddBtn() {
         "cursor-pointer hover:bg-[#2e4bb8]",
         "text-white font-bold transition-colors"
       )}
+      onClick={onClick}
     >
       추가
     </button>

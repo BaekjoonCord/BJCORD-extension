@@ -3,7 +3,23 @@ import OptionInput from "./option-input";
 import OptionAddBtn from "./option-add-btn";
 import OptionCheckbox from "./option-checkbox";
 
-export default function OptionInputField() {
+export default function OptionInputField({
+  nameInput,
+  displayNameInput,
+  urlInput,
+  setDisplayNameInput,
+  setNameInput,
+  setUrlInput,
+  handleAddWebhook,
+}: {
+  nameInput: string;
+  setNameInput: (name: string) => void;
+  urlInput: string;
+  setUrlInput: (url: string) => void;
+  displayNameInput: string;
+  setDisplayNameInput: (displayName: string) => void;
+  handleAddWebhook: () => void;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <div
@@ -12,13 +28,25 @@ export default function OptionInputField() {
           "h-[36px]"
         )}
       >
-        <OptionInput className="w-[20%]" placeholder="웹훅 이름" />
+        <OptionInput
+          className="w-[20%]"
+          placeholder="웹훅 이름"
+          value={nameInput}
+          onChange={setNameInput}
+        />
         <OptionInput
           className="w-[50%]"
           placeholder="웹훅 URL (신뢰할 수 없는 타인에게 공유하지 마세요)"
+          value={urlInput}
+          onChange={setUrlInput}
         />
-        <OptionInput className="w-[25%]" placeholder="표시될 이름" />
-        <OptionAddBtn />
+        <OptionInput
+          className="w-[25%]"
+          placeholder="표시될 이름"
+          value={displayNameInput}
+          onChange={setDisplayNameInput}
+        />
+        <OptionAddBtn onClick={handleAddWebhook} />
       </div>
       <div className="flex flex-col gap-1">
         <OptionCheckbox name="webhook-success-emoji">

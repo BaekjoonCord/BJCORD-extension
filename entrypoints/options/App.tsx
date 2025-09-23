@@ -2,12 +2,15 @@ import OptionHeader from "@/components/options/option-header";
 import OptionInputField from "@/components/options/option-input-field";
 import OptionWebhookItem from "@/components/options/option-webhook-item";
 import PopupTitle from "@/components/popup/title";
-import { getWebhooks, initStorage, isFirstRun } from "@/lib/browser";
-import { Webhook } from "@/lib/webhook";
+import { getWebhooks, initStorage } from "@/lib/browser";
+import { addWebhook, createWebhook, Webhook } from "@/lib/webhook";
 import cn from "@yeahx4/cn";
 
 function App() {
   const [webhooks, setWebhooks] = useState<Webhook[]>([]);
+  const [nameInput, setNameInput] = useState("");
+  const [urlInput, setUrlInput] = useState("");
+  const [displayNameInput, setDisplayNameInput] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -15,6 +18,17 @@ function App() {
       setWebhooks(await getWebhooks());
     })();
   }, []);
+
+  const handleAddWebhook = async () => {
+    if (!nameInput || !urlInput) return;
+    const newWebhook = createWebhook(nameInput, urlInput, displayNameInput);
+    setWebhooks((prev) => [...prev, newWebhook]);
+    setNameInput("");
+    setUrlInput("");
+    setDisplayNameInput("");
+
+    await addWebhook(newWebhook);
+  };
 
   return (
     <div className="w-screen h-screen flex flex-col items-center">
@@ -36,7 +50,15 @@ function App() {
         </div>
 
         <div className="border-t border-[#cbcbcb] pt-4">
-          <OptionInputField />
+          <OptionInputField
+            nameInput={nameInput}
+            setNameInput={setNameInput}
+            urlInput={urlInput}
+            setUrlInput={setUrlInput}
+            displayNameInput={displayNameInput}
+            setDisplayNameInput={setDisplayNameInput}
+            handleAddWebhook={handleAddWebhook}
+          />
         </div>
       </div>
     </div>
