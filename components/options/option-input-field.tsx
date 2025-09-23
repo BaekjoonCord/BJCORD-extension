@@ -3,6 +3,12 @@ import OptionInput from "./option-input";
 import OptionAddBtn from "./option-add-btn";
 import OptionCheckbox from "./option-checkbox";
 import { Webhook } from "@/lib/webhook";
+import {
+  getSendFirstAcOnly,
+  getShowEmoji,
+  syncSendFirstAcOnly,
+  syncShowEmoji,
+} from "@/lib/browser";
 
 export default function OptionInputField({
   nameInput,
@@ -26,6 +32,26 @@ export default function OptionInputField({
     newWebhook: Partial<Omit<Webhook, "id">>
   ) => void;
 }) {
+  const [showEmoji, setShowEmoji] = useState(true);
+  const [onlyFirstSolve, setOnlyFirstSolve] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      setShowEmoji(await getShowEmoji());
+      setOnlyFirstSolve(await getSendFirstAcOnly());
+    })();
+  });
+
+  const toggleShowEmoji = async () => {
+    setShowEmoji((prev) => !prev);
+    await syncShowEmoji(!showEmoji);
+  };
+
+  const toggleOnlyFirstSolve = async () => {
+    setOnlyFirstSolve((prev) => !prev);
+    await syncSendFirstAcOnly(!onlyFirstSolve);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div
@@ -58,10 +84,18 @@ export default function OptionInputField({
         <OptionAddBtn onClick={handleAddWebhook} />
       </div>
       <div className="flex flex-col gap-1">
-        <OptionCheckbox name="webhook-success-emoji">
+        <OptionCheckbox
+          name="webhook-success-emoji"
+          checked={showEmoji}
+          onChange={toggleShowEmoji}
+        >
           웹훅 전송 완료 이모지 표시
         </OptionCheckbox>
-        <OptionCheckbox name="webhook-first-solve">
+        <OptionCheckbox
+          name="webhook-first-solve"
+          checked={onlyFirstSolve}
+          onChange={toggleOnlyFirstSolve}
+        >
           문자를 최초로 맞춘 경우에만 웹훅 전송
         </OptionCheckbox>
       </div>

@@ -106,6 +106,24 @@ export const getActiveWebhooks = async (): Promise<Webhook[]> => {
   return webhooks.filter((wh) => wh.active);
 };
 
+export const getShowEmoji = async (): Promise<boolean> => {
+  const storage = await browser.storage.sync.get(SHOW_EMOJI_KEY);
+  return storage[SHOW_EMOJI_KEY] ?? DEFAULT_SHOW_EMOJI;
+};
+
+export const syncShowEmoji = async (show: boolean) => {
+  await browser.storage.sync.set({ [SHOW_EMOJI_KEY]: show });
+};
+
+export const getSendFirstAcOnly = async (): Promise<boolean> => {
+  const storage = await browser.storage.sync.get(SEND_FIRST_AC_ONLY_KEY);
+  return storage[SEND_FIRST_AC_ONLY_KEY] ?? DEFAULT_SEND_FIRST_AC_ONLY;
+};
+
+export const syncSendFirstAcOnly = async (onlyFirst: boolean) => {
+  await browser.storage.sync.set({ [SEND_FIRST_AC_ONLY_KEY]: onlyFirst });
+};
+
 /**
  * 확장 프로그램이 처음 실행되는지 여부를 반환합니다.
  * 웹훅, 이모지 표시 여부, 첫 AC만 전송 여부 설정이 존재하지 않는 경우(undefined)
