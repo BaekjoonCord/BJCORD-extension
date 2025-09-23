@@ -5,18 +5,18 @@ export default function OptionWebhookItem({ webhook }: { webhook: Webhook }) {
   return (
     <div
       className={cn(
-        "flex justify-between items-center w-full gap-1",
-        "h-8 bg-[#2c2f33] pl-4 pr-2 rounded-sm"
+        "flex justify-between items-center w-full gap-2",
+        "h-8 bg-[#2c2f33] pl-4 pr-2 rounded-sm min-w-0"
       )}
     >
-      <div className="w-[20%] hover:cursor-text overflow-ellipsis overflow-hidden">
-        {webhook.name}
+      <div className={cn("w-[20%] hover:cursor-text h-full flex items-center")}>
+        <span className="w-full truncate">{webhook.name}</span>
       </div>
-      <div className="w-[50%] hover:cursor-text overflow-ellipsis overflow-hidden">
-        {webhook.url}
+      <div className={cn("w-64 hover:cursor-text h-full flex items-center")}>
+        <span className="w-full truncate">{webhook.url}</span>
       </div>
-      <div className="w-[25%] hover:cursor-text overflow-ellipsis overflow-hidden">
-        {webhook.displayName}
+      <div className={cn("w-[25%] hover:cursor-text h-full flex items-center")}>
+        <span className="w-full truncate">{webhook.displayName}</span>
       </div>
       <div
         className={cn(
