@@ -18,8 +18,18 @@ export default defineConfig({
       48: "/icons/48.png",
       128: "/icons/128.png",
     },
-    permissions: ["storage"],
-    host_permissions: ["https://solved.ac/api/v3/*"],
+    permissions: ["storage", "scripting"],
+    host_permissions: [
+      "*://www.acmicpc.net/*",
+      "*://acmicpc.net/*",
+      "https://solved.ac/api/v3/*",
+    ],
+    web_accessible_resources: [
+      {
+        matches: ["*://www.acmicpc.net/*", "*://acmicpc.net/*"],
+        resources: ["/main-world-script.js"],
+      },
+    ],
   }),
   vite: () => ({
     plugins: [tailwindcss()],
