@@ -1,5 +1,5 @@
 import { ContentScriptContext } from "#imports";
-import { getActiveWebhooks, getSendFirstAcOnly } from "./browser";
+import { getActiveWebhooks, getSendFirstAcOnly, getShowEmoji } from "./browser";
 import {
   AC_TITLE_TOOLTIP_QUERY,
   HANDLE_QUERY,
@@ -550,7 +550,24 @@ export async function watchJudgementChange(
 
       logger.log(`Webhook sent! (Success: ${success}, Failed: ${failed})`);
 
-      // TODO : Show Emoji
+      // Show Emoji
+      const shouldShowEmoji = await getShowEmoji();
+      if (shouldShowEmoji) {
+        const statusCell = document.querySelector("span.result-text.result-ac");
+
+        if (statusCell) {
+          if (success > 0 && failed === 0) {
+            statusCell.innerHTML +=
+              '<span title="[BJCORD] 결과를 디스코드에 성공적으로 전달했습니다."> ✔️</span>';
+          } else {
+            if (failed !== 0)
+              statusCell.innerHTML +=
+                '<span title="[BJCORD] 결과를 디스코드에 전달하는데 실패했습니다. 자세한 내용은 로그를 참고해주세요."> ❌</span>';
+          }
+        } else {
+          logger.error("Status cell not found. Cannot append status.");
+        }
+      }
 
       const endTime = new Date().getTime();
       const elapsed = endTime - judgeStartTime;
