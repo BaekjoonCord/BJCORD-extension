@@ -96,7 +96,7 @@ export default function OptionInputField({
           checked={onlyFirstSolve}
           onChange={toggleOnlyFirstSolve}
         >
-          문자를 최초로 맞춘 경우에만 웹훅 전송
+          문제를 최초로 맞춘 경우에만 웹훅 전송
         </OptionCheckbox>
       </div>
     </div>
