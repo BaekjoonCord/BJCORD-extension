@@ -1,12 +1,54 @@
+import { HANDLE_QUERY } from "@/lib/constants";
+import { getLogger } from "@/lib/logger";
+
+function getHandle() {
+  const element = document.querySelector(HANDLE_QUERY);
+  if (!element) return null;
+
+  const handle = element.textContent?.trim();
+  if (!handle) {
+    return null;
+  }
+
+  return handle;
+}
+
+function watchJudgementChange() {}
+
 export default defineContentScript({
   matches: ["*://www.acmicpc.net/*", "*://acmicpc.net/*"],
   async main() {
-    console.log("Injecting script...");
+    const logger = getLogger("content");
 
-    await injectScript("/main-world-script.js", {
-      keepInDom: true,
-    });
+    const url = location.href;
+    logger.log("URL:", url);
 
-    console.log("Done!");
+    const handle = getHandle();
+    if (!handle) {
+      logger.log("No handle found, aborted.");
+      return;
+    }
+
+    logger.log("Handle:", handle);
+
+    if (
+      ["status", `user_id=${handle}`, "problem_id", "from_mine=1"].every(
+        (key) => url.includes(key)
+      )
+    ) {
+      // Main Content Script
+      logger.log("Starting...");
+      watchJudgementChange();
+    } else {
+      logger.log("Not in the status page, aborted.");
+    }
+
+    // logger.log("Injecting script...");
+
+    // await injectScript("/main-world-script.js", {
+    //   keepInDom: true,
+    // });
+
+    // logger.log("Done!");
   },
 });
