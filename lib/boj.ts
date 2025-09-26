@@ -119,6 +119,20 @@ export function unescapeHtml(text: string) {
   );
 }
 
+interface ResultTableRow {
+  codeLength: string;
+  elementId: string;
+  language: string;
+  memory: string;
+  problemId: string;
+  result: string;
+  resultCategory: string;
+  runtime: string;
+  submissionId: string;
+  submissionTime: string;
+  username: string;
+}
+
 export function getResultTable() {
   const table = document.getElementById(
     RESULT_TABLE_ID
@@ -169,7 +183,43 @@ export function getResultTable() {
     list.push(obj);
   }
 
-  return list;
+  return list as ResultTableRow[];
+}
+
+function getTimeDifference(timestamp: string) {
+  const monthNames: Record<string, string> = {
+    "1월": "January",
+    "2월": "February",
+    "3월": "March",
+    "4월": "April",
+    "5월": "May",
+    "6월": "June",
+    "7월": "July",
+    "8월": "August",
+    "9월": "September",
+    "10월": "October",
+    "11월": "November",
+    "12월": "December",
+  };
+
+  for (let month in monthNames) {
+    if (timestamp.includes(month)) {
+      timestamp = timestamp.replace(month, monthNames[month]);
+    }
+  }
+
+  timestamp = timestamp
+    .replace("년", ", ")
+    .replace("일", ",")
+    .replace(":", ":");
+
+  const timestampDate = new Date(Date.parse(timestamp));
+
+  const now = new Date();
+  const difference = now.getTime() - timestampDate.getTime();
+  const differenceInSeconds = Math.floor(difference / 1000);
+
+  return differenceInSeconds;
 }
 
 /**
@@ -193,6 +243,9 @@ export async function watchJudgementChange(
 
   logger.log("Watching judgement change...");
 
+  let isJudging = false;
+  let judgeStartTime = 0;
+
   /*
     많은 브라우저들은 확장이 "invalidated" 되었을 때
     (ex. 업데이트되거나 사용자가 확장을 비활성화하거나 제거하는 경우)
@@ -202,8 +255,52 @@ export async function watchJudgementChange(
   */
   const interval = ctx.setInterval(() => {
     const table = getResultTable();
-    console.log(table);
+    // console.log(table);
+
+    if (!table || table.length == 0) return;
+    const latest = table[0];
+
+    if (
+      latest.resultCategory === "judging" ||
+      latest.resultCategory === "wait" ||
+      latest.resultCategory === "compile"
+    ) {
+      if (!isJudging) {
+        isJudging = true;
+        judgeStartTime = Date.now();
+        logger.log("Waiting for judgement...");
+      }
+
+      return;
+    }
+
+    if (latest.resultCategory !== "ac") {
+      logger.log("Latest submission is not AC, aborted.");
+      clearInterval(interval);
+      return;
+    }
+
+    // 마지막 제출로부터 지난 시간
+    const time = getTimeDifference(latest.submissionTime);
+    if (time > 10) {
+      // 10초 이상 지났으면 무시
+      if (!isJudging) return;
+
+      const duration = (Date.now() - judgeStartTime) / 1000;
+      logger.log(`AC! Took ${duration} seconds.`);
+    }
 
     clearInterval(interval);
+
+    // 시도 횟수 계산
+    let attempts = 1;
+    for (let i = 1; i < table.length; i++) {
+      // if (table[i].username != getHandle()) break;
+      if (table[i].resultCategory != "ac") attempts++;
+      else break;
+    }
+
+    logger.log(`Attempts: ${attempts}`);
+    logger.log(`Sending webhook...`);
   }, WATCH_JUDGEMENT_INTERVAL);
 }
