@@ -11,3 +11,4 @@ export const DEFAULT_SHOW_EMOJI = true;
 export const DEFAULT_SEND_FIRST_AC_ONLY = false;
 
 export const HANDLE_QUERY = "a.username";
+export const AC_TITLE_TOOLTIP_QUERY = "a.problem_title.tooltip-click.result-ac";

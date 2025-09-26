@@ -1,19 +1,5 @@
-import { HANDLE_QUERY } from "@/lib/constants";
+import { getHandle, watchJudgementChange } from "@/lib/boj";
 import { getLogger } from "@/lib/logger";
-
-function getHandle() {
-  const element = document.querySelector(HANDLE_QUERY);
-  if (!element) return null;
-
-  const handle = element.textContent?.trim();
-  if (!handle) {
-    return null;
-  }
-
-  return handle;
-}
-
-function watchJudgementChange() {}
 
 export default defineContentScript({
   matches: ["*://www.acmicpc.net/*", "*://acmicpc.net/*"],
@@ -38,7 +24,7 @@ export default defineContentScript({
     ) {
       // Main Content Script
       logger.log("Starting...");
-      watchJudgementChange();
+      await watchJudgementChange(logger);
     } else {
       logger.log("Not in the status page, aborted.");
     }
