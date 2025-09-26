@@ -14,6 +14,7 @@ import {
   HEADER_SUBMISSION_ID,
   HEADER_SUBMISSION_TIME,
   HEADER_USERNAME,
+  PROBLEM_ID_QUERY,
   RESULT_TABLE_ID,
   SUBMISSION_TIME_QUERY,
   WATCH_JUDGEMENT_INTERVAL,
@@ -148,7 +149,7 @@ export function getResultTable() {
           if (!time) return null;
           return time.getAttribute("data-original-title");
         case HEADER_PROBLEM_ID:
-          const idElement = x.querySelector("a.problem_title");
+          const idElement = x.querySelector(PROBLEM_ID_QUERY);
           if (!idElement) return null;
           return {
             problemId: idElement

@@ -14,6 +14,7 @@ export const HANDLE_QUERY = "a.username";
 export const AC_TITLE_TOOLTIP_QUERY = "a.problem_title.tooltip-click.result-ac";
 export const RESULT_TABLE_ID = "status-table";
 export const SUBMISSION_TIME_QUERY = "a.show-date";
+export const PROBLEM_ID_QUERY = "a.problem_title";
 
 export const WATCH_JUDGEMENT_INTERVAL = 100;
 export const HEADER_PROBLEM_ID = "problemId";
