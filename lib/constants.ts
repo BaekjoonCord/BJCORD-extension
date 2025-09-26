@@ -12,3 +12,18 @@ export const DEFAULT_SEND_FIRST_AC_ONLY = false;
 
 export const HANDLE_QUERY = "a.username";
 export const AC_TITLE_TOOLTIP_QUERY = "a.problem_title.tooltip-click.result-ac";
+export const RESULT_TABLE_ID = "status-table";
+export const SUBMISSION_TIME_QUERY = "a.show-date";
+
+export const WATCH_JUDGEMENT_INTERVAL = 100;
+export const HEADER_PROBLEM_ID = "problemId";
+export const HEADER_LEVEL = "level";
+export const HEADER_RESULT = "result";
+export const HEADER_PROBLEM_DESCRIPTION = "problemDescription";
+export const HEADER_LANGUAGE = "language";
+export const HEADER_SUBMISSION_ID = "submissionId";
+export const HEADER_USERNAME = "username";
+export const HEADER_SUBMISSION_TIME = "submissionTime";
+export const HEADER_RUNTIME = "runtime";
+export const HEADER_MEMORY = "memory";
+export const HEADER_CODE_LENGTH = "codeLength";

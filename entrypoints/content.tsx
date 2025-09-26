@@ -3,7 +3,7 @@ import { getLogger } from "@/lib/logger";
 
 export default defineContentScript({
   matches: ["*://www.acmicpc.net/*", "*://acmicpc.net/*"],
-  async main() {
+  async main(ctx) {
     const logger = getLogger("content");
 
     const url = location.href;
@@ -24,7 +24,7 @@ export default defineContentScript({
     ) {
       // Main Content Script
       logger.log("Starting...");
-      await watchJudgementChange(logger);
+      await watchJudgementChange(ctx, logger);
     } else {
       logger.log("Not in the status page, aborted.");
     }
