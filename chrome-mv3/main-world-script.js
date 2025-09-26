@@ -1,2 +1,0 @@
-var mainWorldScript=(function(){"use strict";function o(n){return n==null||typeof n=="function"?{main:n}:n}const t=o(()=>{console.log("Hello from the main world")});function i(){}function r(n,...l){}const e={debug:(...n)=>r(console.debug,...n),log:(...n)=>r(console.log,...n),warn:(...n)=>r(console.warn,...n),error:(...n)=>r(console.error,...n)};return(async()=>{try{return await t.main()}catch(n){throw e.error('The unlisted script "main-world-script" crashed on startup!',n),n}})()})();
-mainWorldScript;

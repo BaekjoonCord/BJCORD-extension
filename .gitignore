@@ -24,3 +24,6 @@ web-ext.config.ts
 *.njsproj
 *.sln
 *.sw?
+
+chrome-mv3
+chrome-mv3-dev
