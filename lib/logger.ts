@@ -1,11 +1,11 @@
 import { isDev } from "./util";
 
 const log = (file: string, ...args: any[]) => {
-  console.log(`[BJCORD][${file}]${isDev && "[DEV]"}`, ...args);
+  console.log(`[BJCORD][${file}]${isDev ? "[DEV]" : ""}`, ...args);
 };
 
 const error = (file: string, ...args: any[]) => {
-  console.error(`[BJCORD][${file}]${isDev && "[DEV]"}`, ...args);
+  console.error(`[BJCORD][${file}]${isDev ? "[DEV]" : ""}`, ...args);
 };
 
 export interface Logger {
