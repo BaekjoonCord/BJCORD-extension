@@ -1,5 +1,5 @@
 import { ContentScriptContext } from "#imports";
-import { getSendFirstAcOnly } from "./browser";
+import { getActiveWebhooks, getSendFirstAcOnly } from "./browser";
 import {
   AC_TITLE_TOOLTIP_QUERY,
   HANDLE_QUERY,
@@ -17,6 +17,7 @@ import {
   PROBLEM_ID_QUERY,
   RESULT_TABLE_ID,
   SUBMISSION_TIME_QUERY,
+  TIER_NAME,
   WATCH_JUDGEMENT_INTERVAL,
 } from "./constants";
 import { Logger } from "./logger";
@@ -222,6 +223,222 @@ function getTimeDifference(timestamp: string) {
   return differenceInSeconds;
 }
 
+export interface SolvedTag {
+  key: string;
+  isMeta: boolean;
+  bojTagId: number;
+  problemCount: number;
+  displayNames: {
+    language: string;
+    name: string;
+    short: string;
+  }[];
+  aliases: string[];
+}
+
+export interface SolvedProblem {
+  problemId: number;
+  titleKo: string;
+  titles: {
+    language: string;
+    languageDisplayName: string;
+    title: string;
+    isOriginal: boolean;
+  }[];
+  isSolvable: boolean;
+  isPartial: boolean;
+  acceptedUserCount: number;
+  level: number;
+  votedUserCount: number;
+  sprout: boolean;
+  givesNoRating: boolean;
+  isLevelLocked: boolean;
+  averageTries: number;
+  official: boolean;
+  tags: SolvedTag[];
+  metadata: Record<string, unknown>;
+}
+
+export async function getProblemData(problemId: string) {
+  return (await browser.runtime.sendMessage({
+    sender: "boj",
+    task: "solvedProblemFetch",
+    problemId,
+  })) as SolvedProblem;
+}
+
+export function getProblemTier(problemData: SolvedProblem) {
+  const { level, isLevelLocked } = problemData;
+
+  if (level === 0 && isLevelLocked) {
+    return "Not Ratable";
+  }
+
+  return TIER_NAME[level];
+}
+
+export const getColor = (tier: string) => {
+  switch (tier) {
+    case "bronze":
+      return 0xcd7f32;
+    case "silver":
+      return 0xc0c0c0;
+    case "gold":
+      return 0xffd700;
+    case "platinum":
+      return 0x61fa9e;
+    case "diamond":
+      return 0x4db8fa;
+    case "ruby":
+      return 0xff125d;
+    default:
+      return 0x000000;
+  }
+};
+
+function getLevelImg(level: string) {
+  const tier = level.split(" ")[0];
+  const CDN = `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier`;
+  if (tier == "Unrated") {
+    return `${CDN}/unrated.png`;
+  }
+
+  if (level == "Not Ratable") {
+    return `${CDN}/not-ratable.png`;
+  }
+
+  const step = level.split(" ")[1];
+
+  let stepNum = 0;
+  switch (step) {
+    case "I":
+      stepNum = 1;
+      break;
+    case "II":
+      stepNum = 2;
+      break;
+    case "III":
+      stepNum = 3;
+      break;
+    case "IV":
+      stepNum = 4;
+      break;
+    case "V":
+      stepNum = 5;
+      break;
+    default:
+      stepNum = 0;
+  }
+
+  return `${CDN}/${tier.toLowerCase()}${stepNum}.png`;
+}
+
+async function sendMessage(message: any, url: string) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to send webhook: " + response.statusText);
+  }
+}
+
+export async function getWebhookMessage(
+  handle: string,
+  submissionId: string,
+  problemId: string,
+  language: string,
+  memory: string,
+  result: string,
+  runtime: string,
+  length: string,
+  resultText: string,
+  timestamp: string,
+  attempts: number
+) {
+  const solved = await getProblemData(problemId);
+  console.log(solved);
+
+  const getTagName = (tag: SolvedTag) => {
+    const key = tag.key;
+    const display = tag.displayNames.filter((x) => x.language == "ko");
+
+    if (!display) return key;
+
+    return display[0].name;
+  };
+
+  const tier = getProblemTier(solved);
+
+  return (displayName: string | undefined) => ({
+    content: null,
+    embeds: [
+      {
+        title: `[${tier}] ${problemId}번: ${solved.titleKo}`,
+        url: `https://www.acmicpc.net/problem/${problemId}`,
+        description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n${
+          solved.tags.length > 0
+            ? `태그: ||${solved.tags.map(getTagName).join(", ")}||`
+            : ""
+        }`,
+        color: getColor(tier.split(" ")[0].toLowerCase()),
+        fields: [
+          {
+            name: "성능",
+            value: `${memory} KB / ${runtime} ms`,
+            inline: true,
+          },
+          {
+            name: "언어",
+            value: language || "?",
+            inline: true,
+          },
+          {
+            name: "시도한 횟수",
+            value: `${attempts} 회`,
+            inline: true,
+          },
+          {
+            name: "제출 일자",
+            value: `${timestamp}`,
+            inline: true,
+          },
+          {
+            name: "코드 길이",
+            value: length ? `${length} B` : "?",
+            inline: true,
+          },
+          {
+            name: "평균 시도",
+            value: `${solved.averageTries} 회`,
+            inline: true,
+          },
+          {
+            name: "맞은 사람",
+            value: `${solved.acceptedUserCount} 명`,
+            inline: true,
+          },
+        ],
+        author: {
+          name: `${displayName || handle}`,
+          url: `https://solved.ac/profile/${handle}`,
+        },
+        thumbnail: {
+          url: getLevelImg(tier),
+        },
+      },
+    ],
+    username: "BJCORD",
+    avatar_url:
+      "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/thumbnail.png",
+    attachments: [],
+  });
+}
+
 /**
  * BJCORD의 메인 로직입니다.
  * 유저의 채점 결과 변화를 감시하고, 새로운 AC가 감지되면
@@ -302,5 +519,42 @@ export async function watchJudgementChange(
 
     logger.log(`Attempts: ${attempts}`);
     logger.log(`Sending webhook...`);
+
+    (async () => {
+      const msg = await getWebhookMessage(
+        latest.username,
+        latest.submissionId,
+        latest.problemId,
+        latest.language,
+        latest.memory,
+        latest.result,
+        latest.runtime,
+        latest.codeLength,
+        latest.resultCategory,
+        latest.submissionTime,
+        attempts
+      );
+
+      const webhooks = await getActiveWebhooks();
+      let success = 0;
+      let failed = 0;
+      for (const webhook of webhooks) {
+        try {
+          await sendMessage(msg(webhook.displayName), webhook.url);
+          success++;
+        } catch (e) {
+          logger.error(e);
+          failed++;
+        }
+      }
+
+      logger.log(`Webhook sent! (Success: ${success}, Failed: ${failed})`);
+
+      // TODO : Show Emoji
+
+      const endTime = new Date().getTime();
+      const elapsed = endTime - judgeStartTime;
+      logger.log(`Elapsed time: ${elapsed} ms`);
+    })();
   }, WATCH_JUDGEMENT_INTERVAL);
 }
