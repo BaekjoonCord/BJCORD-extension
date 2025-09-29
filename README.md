@@ -1,7 +1,7 @@
 <h1 align="center">
   <img src="assets/thumbnail.png" alt="백준코드 | BaekjoonCord" width="400">
   <br>
-  백준코드 | BaekjoonCord
+  백준코드 | BJCORD
 </h1>
 
 <p align="center">
