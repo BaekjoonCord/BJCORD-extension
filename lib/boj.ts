@@ -1,5 +1,5 @@
 import { ContentScriptContext } from "#imports";
-import { getActiveWebhooks, getSendFirstAcOnly, getShowEmoji } from "./browser";
+import { getSendFirstAcOnly, getShowEmoji, getWebhooks } from "./browser";
 import {
   AC_TITLE_TOOLTIP_QUERY,
   HANDLE_QUERY,
@@ -535,7 +535,7 @@ export async function watchJudgementChange(
         attempts
       );
 
-      const webhooks = await getActiveWebhooks();
+      const webhooks = (await getWebhooks()).filter((wh) => wh.active);
       let success = 0;
       let failed = 0;
       for (const webhook of webhooks) {

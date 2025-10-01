@@ -96,16 +96,6 @@ export const getWebhooks = async (): Promise<Webhook[]> => {
   return storage[WEBHOOK_KEY] || [];
 };
 
-/**
- * 브라우저 동기화 스토리지에 저장된 Webhook 중 활성화된 Webhook 배열을 반환합니다.
- *
- * @returns 활성화된 Webhook 배열
- */
-export const getActiveWebhooks = async (): Promise<Webhook[]> => {
-  const webhooks = await getWebhooks();
-  return webhooks.filter((wh) => wh.active);
-};
-
 export const getShowEmoji = async (): Promise<boolean> => {
   const storage = await browser.storage.sync.get(SHOW_EMOJI_KEY);
   return storage[SHOW_EMOJI_KEY] ?? DEFAULT_SHOW_EMOJI;
