@@ -5,6 +5,7 @@ import {
   SHOW_EMOJI_KEY,
   WEBHOOK_KEY,
 } from "./constants";
+import { createUUID } from "./util";
 import { Webhook } from "./webhook";
 
 /**
@@ -93,7 +94,33 @@ export const syncWebhooks = async (webhooks: Webhook[]) => {
  */
 export const getWebhooks = async (): Promise<Webhook[]> => {
   const storage = await browser.storage.sync.get(WEBHOOK_KEY);
-  return storage[WEBHOOK_KEY] || [];
+  const webhooks: Webhook[] = storage[WEBHOOK_KEY] || [];
+
+  // BJCORD 1 버전에서는 sync stroage에 저장된 웹훅에 id 필드가
+  // 존재하지 않았습니다. BJCORD 1 버전에서는 index를 기반으로 웹훅을
+  // 식별했으나, BJCORD 2 부터 UUID를 기반으로 식별합니다.
+  // 따라서 id 필드가 없는 웹훅에 대해 UUID를 생성하여 id 필드를 추가합니다.
+  // 일반적으로 웹훅의 개수는 많지 않으므로 성능에 미치는 영향은 적을 것으로
+  // 예상합니다. 추후 대부분의 사용자가 BJCORD 2 버전으로 업데이트된 이후에는
+  // 이 코드를 제거할 수 있습니다.
+  let hasUndefinedId = false;
+  for (const wh of webhooks) {
+    if (wh.id === undefined) {
+      hasUndefinedId = true;
+      break;
+    }
+  }
+
+  if (hasUndefinedId) {
+    for (const wh of webhooks) {
+      if (wh.id === undefined) {
+        wh.id = createUUID();
+      }
+    }
+    await syncWebhooks(webhooks);
+  }
+
+  return webhooks;
 };
 
 export const getShowEmoji = async (): Promise<boolean> => {
