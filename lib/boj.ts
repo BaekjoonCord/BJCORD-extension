@@ -537,18 +537,18 @@ export async function watchJudgementChange(
 
       const webhooks = (await getWebhooks()).filter((wh) => wh.active);
       let success = 0;
-      let failed = 0;
+      let failure = 0;
       for (const webhook of webhooks) {
         try {
           await sendMessage(msg(webhook.displayName), webhook.url);
           success++;
         } catch (e) {
           logger.error(e);
-          failed++;
+          failure++;
         }
       }
 
-      logger.log(`Webhook sent! (Success: ${success}, Failed: ${failed})`);
+      logger.log(`Webhook sent! (Success: ${success}, Failed: ${failure})`);
 
       // Show Emoji
       const shouldShowEmoji = await getShowEmoji();
@@ -556,11 +556,11 @@ export async function watchJudgementChange(
         const statusCell = document.querySelector("span.result-text.result-ac");
 
         if (statusCell) {
-          if (success > 0 && failed === 0) {
+          if (success > 0 && failure === 0) {
             statusCell.innerHTML +=
               '<span title="[BJCORD] 결과를 디스코드에 성공적으로 전달했습니다."> ✔️</span>';
           } else {
-            if (failed !== 0)
+            if (failure !== 0)
               statusCell.innerHTML +=
                 '<span title="[BJCORD] 결과를 디스코드에 전달하는데 실패했습니다. 자세한 내용은 로그를 참고해주세요."> ❌</span>';
           }
