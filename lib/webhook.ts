@@ -1,5 +1,5 @@
 import { getWebhooks, syncWebhooks } from "./browser";
-import { makeUUID } from "./util";
+import { createUUID } from "./util";
 
 export interface Webhook {
   id: string;
@@ -9,13 +9,21 @@ export interface Webhook {
   active: boolean;
 }
 
+/**
+ * 새로운 웹훅 객체를 생성합니다.
+ *
+ * @param name 웹훅의 이름
+ * @param url 웹훅 URL
+ * @param displayName 표시될 이름
+ * @returns 웹훅 객체
+ */
 export const createWebhook = (
   name: string,
   url: string,
   displayName?: string
 ): Webhook => {
   return {
-    id: makeUUID(),
+    id: createUUID(),
     name,
     url,
     displayName,

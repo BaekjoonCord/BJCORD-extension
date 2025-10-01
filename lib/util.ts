@@ -11,4 +11,4 @@ export const isDev = import.meta.env.DEV;
  * @returns UUID
  * @see https://caniuse.com/?search=randomUUID
  */
-export const makeUUID = () => crypto.randomUUID();
+export const createUUID = () => crypto.randomUUID();

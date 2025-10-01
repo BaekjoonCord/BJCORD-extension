@@ -18,7 +18,7 @@ export default defineConfig({
       48: "/icons/48.png",
       128: "/icons/128.png",
     },
-    permissions: ["storage", "scripting"],
+    permissions: ["storage"],
     host_permissions: [
       "*://www.acmicpc.net/*",
       "*://acmicpc.net/*",
