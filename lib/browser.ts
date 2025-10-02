@@ -151,14 +151,14 @@ export const syncSendFirstAcOnly = async (onlyFirst: boolean) => {
  * @returns 확장 프로그램이 처음 실행되는지 여부
  */
 export const isFirstRun = async (): Promise<boolean> => {
-  const isWhUndefined = await browser.storage.sync.get(WEBHOOK_KEY);
+  const webhooks = await browser.storage.sync.get(WEBHOOK_KEY);
   const shouldShowEmoji = await browser.storage.sync.get(SHOW_EMOJI_KEY);
   const sendFirstAcOnly = await browser.storage.sync.get(
     SEND_FIRST_AC_ONLY_KEY
   );
 
   return (
-    isWhUndefined[WEBHOOK_KEY] === undefined ||
+    webhooks[WEBHOOK_KEY] === undefined ||
     shouldShowEmoji[SHOW_EMOJI_KEY] === undefined ||
     sendFirstAcOnly[SEND_FIRST_AC_ONLY_KEY] === undefined
   );
