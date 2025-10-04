@@ -1,4 +1,5 @@
 import { Webhook } from "@/lib/webhook";
+import ToggleSwitch from "../toggle-switch";
 
 export default function PopupWebhookItem({
   webhook,
@@ -11,13 +12,17 @@ export default function PopupWebhookItem({
     <div className="text-white flex gap-2">
       <div>
         {/* TODO : Switch로 바꾸기 */}
-        <input
+        {/* <input
           type="checkbox"
           checked={webhook.active}
           onChange={() => toggleWebhook(webhook.id)}
+        /> */}
+        <ToggleSwitch
+          enabled={webhook.active}
+          setEnabled={(enabled) => toggleWebhook(webhook.id)}
+          label={webhook.name}
         />
       </div>
-      <span>{webhook.name}</span>
     </div>
   );
 }
