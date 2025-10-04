@@ -120,6 +120,26 @@ export const getWebhooks = async (): Promise<Webhook[]> => {
     await syncWebhooks(webhooks);
   }
 
+  // BJCORD 1 버전에선 active필드가 enabled로 저장되어 있었습니다.
+  // enabled 필드가 존재하는 경우 active 필드로 복사하고 enabled 필드를 제거합니다.
+  let hasEnabledField = false;
+  for (const wh of webhooks) {
+    if ((wh as any).enabled !== undefined) {
+      hasEnabledField = true;
+      break;
+    }
+  }
+
+  if (hasEnabledField) {
+    for (const wh of webhooks) {
+      if ((wh as any).enabled !== undefined) {
+        wh.active = (wh as any).enabled;
+        delete (wh as any).enabled;
+      }
+    }
+    await syncWebhooks(webhooks);
+  }
+
   return webhooks;
 };
 
