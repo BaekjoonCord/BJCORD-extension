@@ -1,12 +1,21 @@
-import { getWebhooks } from "@/lib/browser";
+import { getExtensionId, getWebhooks } from "@/lib/browser";
 import { updateWebhook, Webhook } from "@/lib/webhook";
 import cn from "@yeahx4/cn";
 import PopupWebhookItem from "./popup-webhook-item";
 
 export default function WebhookList() {
+  const [extId, setExtId] = useState<string>("");
   const [webhooks, setWebhooks] = useState<Webhook[]>([]);
 
   useEffect(() => {
+    const id = getExtensionId();
+    if (id) {
+      setExtId(id);
+    } else {
+      setExtId("unknown_id");
+      console.error("Failed to get extension ID");
+    }
+
     (async () => {
       setWebhooks(await getWebhooks());
     })();
@@ -40,9 +49,18 @@ export default function WebhookList() {
           />
         ))
       ) : (
-        <span className="text-sm text-gray-300 self-center">
-          "등록된 웹훅이 없습니다."
-        </span>
+        <div className="flex flex-col items-center h-[80%] justify-center">
+          <span className="text-sm text-gray-300 self-center">
+            등록된 웹훅이 없습니다
+          </span>
+          <a
+            href={`chrome-extension://${extId}/options.html`}
+            target="_blank"
+            className="mt-2 text-sm text-blue-400 underline"
+          >
+            추가하기
+          </a>
+        </div>
       )}
     </div>
   );
