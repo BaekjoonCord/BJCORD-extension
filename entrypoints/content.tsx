@@ -28,13 +28,5 @@ export default defineContentScript({
     } else {
       logger.log("Not in the status page, aborted.");
     }
-
-    // logger.log("Injecting script...");
-
-    // await injectScript("/main-world-script.js", {
-    //   keepInDom: true,
-    // });
-
-    // logger.log("Done!");
   },
 });
