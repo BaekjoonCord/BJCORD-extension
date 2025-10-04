@@ -42,11 +42,12 @@ export default function WebhookList() {
     >
       {webhooks.length ? (
         webhooks.map((wh) => (
-          <PopupWebhookItem
-            key={wh.id}
-            webhook={wh}
-            toggleWebhook={toggleWebhook}
-          />
+          <div className="flex justify-between" key={wh.id}>
+            <PopupWebhookItem webhook={wh} toggleWebhook={toggleWebhook} />
+            <span className="text-sm text-gray-300 opacity-90">
+              {wh.displayName ? `[${wh.displayName}]` : ""}
+            </span>
+          </div>
         ))
       ) : (
         <div className="flex flex-col items-center h-[80%] justify-center">
