@@ -21,7 +21,8 @@
 2. [**사용 방법**](#사용-방법)
    1. [일반 사용자](#1-일반-사용자)
    2. [디스코드 서버 관리자](#2-디스코드-서버-관리자)
-3. [**Contributors**](#Contributors)
+3. [**기여하기**](#기여하기)
+4. [**Contributors**](#Contributors)
    <br />
    <br />
 
@@ -103,6 +104,55 @@
 > 외부에 노출될 경우 원치 않는 스팸 메시지 공격을 받을 위험이 있습니다.
 
 <br>
+
+## 기여하기
+
+기여를 원하신다면, 먼저 이 저장소를 포크(fork)한 후, 변경 사항을 커밋하고 풀 리퀘스트(pull request)를 보내주세요. 또는 이슈(issue)를 통해 버그 리포트나 기능 요청을 남겨주셔도 좋습니다. 모든 기여는 환영합니다!
+
+**Requirements**
+
+- Node.js (20.19+)
+- pnpm
+
+**설치 및 실행 방법**
+
+먼저 dependency를 설치합니다.
+
+```bash
+pnpm install
+```
+
+wxt는 `postinstall` 스크립트의 실행을 필수로 요구합니다.
+만약 `.wxt` 디렉토리가 생성되지 않는다면 `pnpm postinstall`을 수동으로 실행해주세요.
+
+BJCORD는 크롬, 파이어폭스 환경에서 HMR(Hot Module Replacement)을 지원합니다.
+아래 명령어를 통해 개발 브라우저를 띄워 실시간으로 변경 사항을 확인할 수 있습니다.
+종종, 개발 브라우저에서는 CAPTCHA를 통과하지 못하는 경우가 있습니다. 그런 경우
+직접 빌드해 개발 브라우저가 아닌 실제 브라우저에서 테스트해보시길 바랍니다.
+
+```bash
+pnpm dev
+pnpm dev:firefox
+```
+
+개발 환경에서는 확장 프로그램의 아이콘과 이름에 dev가 표시됩니다.
+
+**빌드 및 압축**
+
+다음 명령어를 통해 빌드를 진행할 수 있습니다. 빌드된 결과물은 `.output` 디렉토리에
+생성됩니다.
+
+```bash
+pnpm build
+pnpm build:firefox
+```
+
+zip 압축된 결과물을 원한다면 다음 명령어를 통해 압축할 수 있습니다.
+
+```bash
+pnpm zip
+pnpm zip:firefox
+```
 
 ## Contributors
 
