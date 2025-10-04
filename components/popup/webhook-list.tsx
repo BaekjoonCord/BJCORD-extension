@@ -28,7 +28,7 @@ export default function WebhookList() {
     <div
       className={cn(
         "bg-[#424549] w-full p-4 rounded-sm h-48",
-        "overflow-auto flex flex-col"
+        "overflow-auto flex flex-col gap-2"
       )}
     >
       {webhooks.length ? (
