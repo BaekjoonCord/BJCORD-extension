@@ -20,15 +20,8 @@ export default defineConfig({
     },
     permissions: ["storage"],
     host_permissions: [
-      "*://www.acmicpc.net/*",
-      "*://acmicpc.net/*",
+      "https://www.acmicpc.net/*",
       "https://solved.ac/api/v3/*",
-    ],
-    web_accessible_resources: [
-      {
-        matches: ["*://www.acmicpc.net/*", "*://acmicpc.net/*"],
-        resources: ["/main-world-script.js"],
-      },
     ],
   }),
   vite: () => ({
