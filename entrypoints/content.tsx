@@ -2,7 +2,7 @@ import { getHandle, watchJudgementChange } from "@/lib/boj";
 import { getLogger } from "@/lib/logger";
 
 export default defineContentScript({
-  matches: ["*://www.acmicpc.net/*", "*://acmicpc.net/*"],
+  matches: ["https://www.acmicpc.net/*"],
   async main(ctx) {
     const logger = getLogger("content");
 
