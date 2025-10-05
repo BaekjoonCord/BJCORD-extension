@@ -17,7 +17,7 @@ export default function ToggleSwitch({
         aria-checked={enabled}
         onClick={() => setEnabled(!enabled)}
         className={cn(
-          "relative inline-flex h-6 w-11 items-center",
+          "relative inline-flex h-6 w-11 items-center hover:cursor-pointer",
           "rounded-full transition-colors duration-200",
           enabled ? "bg-blue-500" : "bg-gray-600"
         )}
