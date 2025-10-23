@@ -4,6 +4,10 @@ import {
   SEND_FIRST_AC_ONLY_KEY,
   SHOW_EMOJI_KEY,
   WEBHOOK_KEY,
+
+  TIER_SELECTOR_KEY,
+  DEFAULT_TIER_SELECTOR_START,
+  DEFAULT_TIER_SELECTOR_END,
 } from "./constants";
 import { createUUID } from "./util";
 import { Webhook } from "./webhook";
@@ -161,6 +165,28 @@ export const syncSendFirstAcOnly = async (onlyFirst: boolean) => {
   await browser.storage.sync.set({ [SEND_FIRST_AC_ONLY_KEY]: onlyFirst });
 };
 
+export const getTierSelector = async (): Promise<{ start: number; end: number }> => {
+  const storage = await browser.storage.sync.get(TIER_SELECTOR_KEY);
+  const tierSelector = storage[TIER_SELECTOR_KEY];
+  if (
+    tierSelector === undefined ||
+    tierSelector.start === undefined ||
+    tierSelector.end === undefined
+  ) {
+    return {
+      start: DEFAULT_TIER_SELECTOR_START,
+      end: DEFAULT_TIER_SELECTOR_END,
+    };
+  }
+  return tierSelector;
+};
+
+export const syncTierSelector = async (start: number, end: number) => {
+  await browser.storage.sync.set({
+    [TIER_SELECTOR_KEY]: { start, end },
+  });
+};
+
 /**
  * 확장 프로그램이 처음 실행되는지 여부를 반환합니다.
  * 웹훅, 이모지 표시 여부, 첫 AC만 전송 여부 설정이 존재하지 않는 경우(undefined)
@@ -176,11 +202,13 @@ export const isFirstRun = async (): Promise<boolean> => {
   const sendFirstAcOnly = await browser.storage.sync.get(
     SEND_FIRST_AC_ONLY_KEY
   );
+  const tierSelector = await browser.storage.sync.get(TIER_SELECTOR_KEY);
 
   return (
     webhooks[WEBHOOK_KEY] === undefined ||
     shouldShowEmoji[SHOW_EMOJI_KEY] === undefined ||
-    sendFirstAcOnly[SEND_FIRST_AC_ONLY_KEY] === undefined
+    sendFirstAcOnly[SEND_FIRST_AC_ONLY_KEY] === undefined ||
+    tierSelector[TIER_SELECTOR_KEY] === undefined
   );
 };
 
@@ -200,5 +228,13 @@ export const initStorage = async () => {
   if ((await browser.storage.sync.get(SEND_FIRST_AC_ONLY_KEY)) === undefined)
     await browser.storage.sync.set({
       [SEND_FIRST_AC_ONLY_KEY]: DEFAULT_SEND_FIRST_AC_ONLY,
+    });
+    
+  if ((await browser.storage.sync.get(TIER_SELECTOR_KEY)) === undefined)
+    await browser.storage.sync.set({
+      [TIER_SELECTOR_KEY]: {
+        start: DEFAULT_TIER_SELECTOR_START,
+        end: DEFAULT_TIER_SELECTOR_END,
+      },
     });
 };
