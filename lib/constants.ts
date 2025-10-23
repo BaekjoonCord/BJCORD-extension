@@ -29,6 +29,8 @@ export const HEADER_RUNTIME = "runtime";
 export const HEADER_MEMORY = "memory";
 export const HEADER_CODE_LENGTH = "codeLength";
 
+export const CDN = `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier`;
+
 export const TIER_NAME: Record<number, string> = {
   0: "Unrated",
   1: "Bronze V",

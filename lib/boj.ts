@@ -2,6 +2,7 @@ import { ContentScriptContext } from "#imports";
 import { getSendFirstAcOnly, getShowEmoji, getWebhooks } from "./browser";
 import {
   AC_TITLE_TOOLTIP_QUERY,
+  CDN,
   HANDLE_QUERY,
   HEADER_CODE_LENGTH,
   HEADER_LANGUAGE,
@@ -58,6 +59,13 @@ export function isUserAlreadyAccepted() {
   return !!acceptedProblemTitleTooltip;
 }
 
+/**
+ * 채점 테이블의 헤더 문자열을 ID로 매핑합니다.
+ * BOJ의 언어 설정이 한국어/영어인 경우를 모두 처리합니다.
+ *
+ * @param header 채점 테이블의 헤더
+ * @returns ID로 변환된 헤더
+ */
 function mapTableHeader(header: string) {
   switch (header.toLowerCase()) {
     case "문제번호":
@@ -98,6 +106,12 @@ function mapTableHeader(header: string) {
   }
 }
 
+/**
+ * HTML 이스케이프된 문자를 unescape합니다.
+ *
+ * @param text HTML 텍스트
+ * @returns unescape된 HTML
+ */
 export function unescapeHtml(text: string) {
   const unescaped: Record<string, string> = {
     "&amp;": "&",
@@ -120,6 +134,9 @@ export function unescapeHtml(text: string) {
   );
 }
 
+/**
+ * 채점 결과 테이블을 파싱해 만든 열
+ */
 interface ResultTableRow {
   codeLength: string;
   elementId: string;
@@ -134,6 +151,13 @@ interface ResultTableRow {
   username: string;
 }
 
+/**
+ * 채점 결과 테이블을 파싱해 `ResultTableRow` 배열을 반환합니다.
+ * BOJ 특성상 최대 20개의 최근 제출 내역만 표시됩니다. 제출이 너무 많은 경우
+ * 이 함수는 올바른 결과를 반환하지 못할 수 있습니다.
+ *
+ * @returns 파싱된 채점 결과 테이블
+ */
 export function getResultTable() {
   const table = document.getElementById(
     RESULT_TABLE_ID
@@ -187,6 +211,12 @@ export function getResultTable() {
   return list as ResultTableRow[];
 }
 
+/**
+ * 타임스탬프로부터 지난 시간을 초 단위로 반환합니다.
+ *
+ * @param timestamp 타임스탬프
+ * @returns 타임스탬프로부터 지난 시간(초)
+ */
 function getTimeDifference(timestamp: string) {
   const monthNames: Record<string, string> = {
     "1월": "January",
@@ -223,6 +253,9 @@ function getTimeDifference(timestamp: string) {
   return differenceInSeconds;
 }
 
+/**
+ * solved.ac API의 태그 정보
+ */
 export interface SolvedTag {
   key: string;
   isMeta: boolean;
@@ -236,6 +269,9 @@ export interface SolvedTag {
   aliases: string[];
 }
 
+/**
+ * solved.ac API의 문제 정보
+ */
 export interface SolvedProblem {
   problemId: number;
   titleKo: string;
@@ -259,6 +295,14 @@ export interface SolvedProblem {
   metadata: Record<string, unknown>;
 }
 
+/**
+ * 문제 번호를 통해 solved.ac API에서 문제 정보를 가져옵니다.
+ * CORS 문제를 피하기 위해 background script를 통해 fetch합니다.
+ * 요청을 보내는 코드는 `entrypoints/background.ts` 파일을 참고하세요.
+ *
+ * @param problemId 문제 번호
+ * @returns solved.ac API에서 fetch된 정보
+ */
 export async function getProblemData(problemId: string) {
   return (await browser.runtime.sendMessage({
     sender: "boj",
@@ -267,6 +311,19 @@ export async function getProblemData(problemId: string) {
   })) as SolvedProblem;
 }
 
+/**
+ * solved.ac 문제 데이터로부터 문제 티어 문자열을 반환합니다.
+ * solved.ac의 티어 체계는 level을 0~31까지의 정수로 표현합니다.
+ * 각각 Unrated, Bronze V ~ Ruby I, Master에 해당합니다.
+ *
+ * level이 0인 경우 Unrated 또는 Not Ratable(번외)로 나뉩니다.
+ * isLevelLocked가 true인 경우 Not Ratable, false인 경우 Unrated입니다.
+ *
+ * @param problemData solved.ac API 문제 정보
+ * @returns 문제 티어 영문 이름 (ex. "Silver II")
+ *
+ * @see https://github.com/BaekjoonCord/BJCORD-extension/pull/52
+ */
 export function getProblemTier(problemData: SolvedProblem) {
   const { level, isLevelLocked } = problemData;
 
@@ -277,8 +334,16 @@ export function getProblemTier(problemData: SolvedProblem) {
   return TIER_NAME[level];
 }
 
+/**
+ * 문제 티어 문자열로부터 색상 코드를 반환합니다.
+ * Bronze, Silver, Gold, Platinum, Diamond, Ruby에 대해 색상 코드를 반환합니다.
+ * Unrated 또는 Not Ratable인 경우 검은색을 반환합니다.
+ *
+ * @param tier 문제의 문자열 티어
+ * @returns 색상 코드
+ */
 export const getColor = (tier: string) => {
-  switch (tier) {
+  switch (tier.toLowerCase()) {
     case "bronze":
       return 0xcd7f32;
     case "silver":
@@ -296,43 +361,40 @@ export const getColor = (tier: string) => {
   }
 };
 
-function getLevelImg(level: string) {
-  const tier = level.split(" ")[0];
-  const CDN = `https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier`;
-  if (tier == "Unrated") {
-    return `${CDN}/unrated.png`;
-  }
+/**
+ * 문제 티어 문자열로부터 티어 이미지를 반환합니다.
+ *
+ * @param rawTier 문제의 문자열 티어
+ * @returns 티어 이미지 URL
+ */
+function getLevelImg(rawTier: string) {
+  const tier = rawTier.split(" ")[0];
 
-  if (level == "Not Ratable") {
+  if (rawTier === "Unrated") {
+    return `${CDN}/unrated.png`;
+  } else if (rawTier === "Not Ratable") {
     return `${CDN}/not-ratable.png`;
   }
 
-  const step = level.split(" ")[1];
+  const step = rawTier.split(" ")[1];
 
   let stepNum = 0;
-  switch (step) {
-    case "I":
-      stepNum = 1;
-      break;
-    case "II":
-      stepNum = 2;
-      break;
-    case "III":
-      stepNum = 3;
-      break;
-    case "IV":
-      stepNum = 4;
-      break;
-    case "V":
-      stepNum = 5;
-      break;
-    default:
-      stepNum = 0;
-  }
+  if (step === "I") stepNum = 1;
+  else if (step === "II") stepNum = 2;
+  else if (step === "III") stepNum = 3;
+  else if (step === "IV") stepNum = 4;
+  else if (step === "V") stepNum = 5;
+  else stepNum = 0;
 
   return `${CDN}/${tier.toLowerCase()}${stepNum}.png`;
 }
 
+/**
+ * 웹훅 메세지를 전송합니다.
+ *
+ * @param message 웹훅 메세지
+ * @param url 웹훅 URL
+ */
 async function sendMessage(message: any, url: string) {
   const response = await fetch(url, {
     method: "POST",
@@ -347,6 +409,22 @@ async function sendMessage(message: any, url: string) {
   }
 }
 
+/**
+ * 웹훅 메세지를 생성합니다.
+ *
+ * @param handle BOJ 핸들
+ * @param submissionId 제출 ID
+ * @param problemId 문제 번호
+ * @param language 사용한 언어
+ * @param memory 메모리
+ * @param result 채점 결과
+ * @param runtime 실행 시간
+ * @param length 코드 길이
+ * @param resultText 채점 결과 텍스트 (화면에 표시되는 결과)
+ * @param timestamp 제출 일자
+ * @param attempts 시도 횟수
+ * @returns
+ */
 export async function getWebhookMessage(
   handle: string,
   submissionId: string,
@@ -361,7 +439,6 @@ export async function getWebhookMessage(
   attempts: number
 ) {
   const solved = await getProblemData(problemId);
-  console.log(solved);
 
   const getTagName = (tag: SolvedTag) => {
     const key = tag.key;
@@ -465,10 +542,11 @@ export async function watchJudgementChange(
 
   /*
     많은 브라우저들은 확장이 "invalidated" 되었을 때
-    (ex. 업데이트되거나 사용자가 확장을 비활성화하거나 제거하는 경우)
+    (ex. 확장 프로그램이 업데이트되거나 사용자가 확장을 비활성화/제거하는 경우)
     모든 content script를 중지시키지 않습니다. Invalidated된 상태에서
-    interval이 계속 동작하는 것을 막아주기 위해 ctx.setInterval을 사용합니다.
-    참고 : https://wxt.dev/guide/essentials/content-scripts.html
+    interval이 계속 동작하는 것을 막기 위해 ctx.setInterval을 사용합니다.
+    
+    https://wxt.dev/guide/essentials/content-scripts.html
   */
   const interval = ctx.setInterval(() => {
     const table = getResultTable();
@@ -517,7 +595,6 @@ export async function watchJudgementChange(
       else break;
     }
 
-    logger.log(`Attempts: ${attempts}`);
     logger.log(`Sending webhook...`);
 
     (async () => {
@@ -548,7 +625,7 @@ export async function watchJudgementChange(
         }
       }
 
-      logger.log(`Webhook sent! (Success: ${success}, Failed: ${failure})`);
+      logger.log(`Webhook sent! (Success: ${success}, Failure: ${failure})`);
 
       // Show Emoji
       const shouldShowEmoji = await getShowEmoji();
