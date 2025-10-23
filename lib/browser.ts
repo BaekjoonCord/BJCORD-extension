@@ -143,20 +143,43 @@ export const getWebhooks = async (): Promise<Webhook[]> => {
   return webhooks;
 };
 
+/**
+ * sync storage에서 showEmoji 값을 반환합니다.
+ * showEmoji 값은 BJCORD에서 웹훅을 전송한 후 채점 결과에 이모지를 표시할 지 여부를 나타냅니다.
+ *
+ * @returns sync storage에 저장된 showEmoji
+ */
 export const getShowEmoji = async (): Promise<boolean> => {
   const storage = await browser.storage.sync.get(SHOW_EMOJI_KEY);
   return storage[SHOW_EMOJI_KEY] ?? DEFAULT_SHOW_EMOJI;
 };
 
+/**
+ * sync storage에 showEmoji 값을 저장합니다.
+ *
+ * @param show sync storage에 저장할 showEmoji
+ */
 export const syncShowEmoji = async (show: boolean) => {
   await browser.storage.sync.set({ [SHOW_EMOJI_KEY]: show });
 };
 
+/**
+ * sync storage에서 sendFirstAcOnly 값을 반환합니다.
+ * sendFirstAcOnly 값은 BJCORD에서 처음으로 문제를 맞춘 경우에만
+ * 웹훅을 전송할 지 여부를 나타냅니다.
+ *
+ * @returns sync storage에 저장된 sendFirstAcOnly
+ */
 export const getSendFirstAcOnly = async (): Promise<boolean> => {
   const storage = await browser.storage.sync.get(SEND_FIRST_AC_ONLY_KEY);
   return storage[SEND_FIRST_AC_ONLY_KEY] ?? DEFAULT_SEND_FIRST_AC_ONLY;
 };
 
+/**
+ * sync storage에 sendFirstAcOnly 값을 저장합니다.
+ *
+ * @param onlyFirst sync storage에 저장할 sendFirstAcOnly
+ */
 export const syncSendFirstAcOnly = async (onlyFirst: boolean) => {
   await browser.storage.sync.set({ [SEND_FIRST_AC_ONLY_KEY]: onlyFirst });
 };
