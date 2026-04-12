@@ -13,54 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import cn from "@yeahx4/cn";
-
-const BASE_IMG =
-  "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/solved-tier/";
-
-const TIER_COLORS: Record<number, string> = {
-  0: "#9d9d9d",
-  1: "#ad5600", 2: "#ad5600", 3: "#ad5600", 4: "#ad5600", 5: "#ad5600",
-  6: "#435f7a", 7: "#435f7a", 8: "#435f7a", 9: "#435f7a", 10: "#435f7a",
-  11: "#ec9b00", 12: "#ec9b00", 13: "#ec9b00", 14: "#ec9b00", 15: "#ec9b00",
-  16: "#27e2a4", 17: "#27e2a4", 18: "#27e2a4", 19: "#27e2a4", 20: "#27e2a4",
-  21: "#00b4fc", 22: "#00b4fc", 23: "#00b4fc", 24: "#00b4fc", 25: "#00b4fc",
-  26: "#ff0062", 27: "#ff0062", 28: "#ff0062", 29: "#ff0062", 30: "#ff0062",
-};
-
-/** 각 티어 경계 마커 (슬라이더용) */
-const TIER_MARKERS = [
-  { level: 0, img: "unrated", label: "Unrated" },
-  { level: 1, img: "bronze5", label: "Bronze V" },
-  { level: 6, img: "silver5", label: "Silver V" },
-  { level: 11, img: "gold5", label: "Gold V" },
-  { level: 16, img: "platinum5", label: "Plat V" },
-  { level: 21, img: "diamond5", label: "Diamond V" },
-  { level: 26, img: "ruby5", label: "Ruby V" },
-  { level: 30, img: "ruby1", label: "Ruby I" },
-] as const;
-
-function getTierColor(tier: number): string {
-  return TIER_COLORS[tier] ?? "#9d9d9d";
-}
-
-/** 티어 레벨(0~30)에 대응하는 이미지 파일명 반환 */
-function getTierImg(level: number): string {
-  if (level === 0) return "unrated";
-  const names = ["bronze", "silver", "gold", "platinum", "diamond", "ruby"];
-  const tierIdx = Math.ceil(level / 5) - 1;
-  const sub = 5 - ((level - 1) % 5);
-  return `${names[tierIdx]}${sub}`;
-}
-
-/**
- * WebKit 기준 슬라이더 thumb 중심 CSS 위치 계산
- * thumbDiameter=16px → offset = 8 - (level/30)*16
- */
-function thumbPos(level: number): string {
-  const pct = (level / 30) * 100;
-  const offset = 8 - (level / 30) * 16;
-  return `calc(${pct.toFixed(3)}% + ${offset.toFixed(3)}px)`;
-}
+import {
+  BASE_IMG,
+  getTierColor,
+  getTierImg,
+  thumbPos,
+  TIER_MARKERS,
+} from "@/lib/tier";
+import { useClickOutside } from "@/hooks/use-click-outside";
 
 /** 티어 이미지 + 이름을 함께 표시하는 셀렉트 아이템 row */
 function TierRow({ level }: { level: number }) {
@@ -70,9 +30,9 @@ function TierRow({ level }: { level: number }) {
         src={`${BASE_IMG}${getTierImg(level)}.png`}
         alt={TIER_NAME[level]}
         style={{ width: 16, height: 16, objectFit: "contain" }}
-      // onError={(e) => {
-      //   (e.target as HTMLImageElement).style.visibility = "hidden";
-      // }}
+        onError={(e) => {
+          (e.target as HTMLImageElement).style.display = "none";
+        }}
       />
       <span style={{ color: getTierColor(level) }}>{TIER_NAME[level]}</span>
     </span>
@@ -127,24 +87,12 @@ export default function TierRangeTooltip({
     setOpen(true);
   };
 
-  useEffect(() => {
-    if (!open) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      // Select가 열려 있는 동안에는 팝업을 닫지 않음
-      if (selectOpenRef.current > 0) return;
-      const t = e.target as Element;
-      // Radix Portal 내부 클릭 시 popup 닫지 않음
-      if (t.closest?.("[data-radix-popper-content-wrapper]")) return;
-      if (
-        popupRef.current && !popupRef.current.contains(t as Node) &&
-        triggerRef.current && !triggerRef.current.contains(t as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [open]);
+  useClickOutside(
+    open,
+    () => setOpen(false),
+    [popupRef, triggerRef],
+    () => selectOpenRef.current > 0
+  );
 
   const commitMin = (val: number) => {
     const v = Math.min(val, maxVal);
@@ -159,12 +107,13 @@ export default function TierRangeTooltip({
   const handleMinDrag = (val: number) => setMinVal(Math.min(val, maxVal));
   const handleMaxDrag = (val: number) => setMaxVal(Math.max(val, minVal));
 
-  const isDefault =
-    minVal === DEFAULT_TIER_SELECTOR_START &&
-    maxVal === DEFAULT_TIER_SELECTOR_END;
-
   const minPct = (minVal / 30) * 100;
   const maxPct = (maxVal / 30) * 100;
+
+  const onSelectOpenChange = (o: boolean) => {
+    if (o) selectOpenRef.current += 1;
+    else setTimeout(() => { selectOpenRef.current -= 1; }, 0);
+  };
 
   return (
     <>
@@ -172,33 +121,25 @@ export default function TierRangeTooltip({
       <button
         ref={triggerRef}
         onClick={handleOpen}
-        title={
-          isDefault
-            ? "전체 티어"
-            : `${TIER_NAME[minVal]} ~ ${TIER_NAME[maxVal]}`
-        }
+        title={`${TIER_NAME[minVal]} ~ ${TIER_NAME[maxVal]}`}
         className={cn(
           "text-[11px] px-2 py-0.5 rounded transition-colors w-full text-left truncate",
           "bg-[#1e1f22] hover:bg-[#36393f]",
           open ? "ring-1 ring-[#5865f2] text-white" : "text-gray-300"
         )}
       >
-        {isDefault ? (
-          <span className="text-gray-400">전체 티어</span>
-        ) : (
-          <>
-            <span style={{ color: getTierColor(minVal) }}>
-              {TIER_NAME[minVal]}
-            </span>
-            <span className="text-gray-500 mx-1">~</span>
-            <span style={{ color: getTierColor(maxVal) }}>
-              {TIER_NAME[maxVal]}
-            </span>
-          </>
-        )}
+        <>
+          <span style={{ color: getTierColor(minVal) }}>
+            {TIER_NAME[minVal]}
+          </span>
+          <span className="text-gray-500 mx-1">~</span>
+          <span style={{ color: getTierColor(maxVal) }}>
+            {TIER_NAME[maxVal]}
+          </span>
+        </>
       </button>
 
-      {/* 오버레이 팝업 (fixed, 레이아웃 시프트 없음) */}
+      {/* 오버레이 팝업 */}
       {open && (
         <div
           ref={popupRef}
@@ -212,7 +153,7 @@ export default function TierRangeTooltip({
         >
           {/* 헤더 */}
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-bold text-white">전송할 티어 범위 설정</span>
+            <span className="text-sm font-bold text-white">전송할 난이도 범위 설정</span>
             <button
               onClick={() => setOpen(false)}
               className="text-gray-400 hover:text-white text-xs transition-colors leading-none"
@@ -257,7 +198,7 @@ export default function TierRangeTooltip({
             </div>
 
             {/* ── 티어 마커 (점 + 아이콘) ── */}
-            <div className="relative mt-1" style={{ height: 44 }}>
+            <div className="relative mt-1 px-[10px]" style={{ height: 44 }}>
               {TIER_MARKERS.map(({ level, img, label }) => {
                 const isActive = level >= minVal && level <= maxVal;
                 return (
@@ -271,7 +212,7 @@ export default function TierRangeTooltip({
                     }}
                   >
                     <div
-                      className="w-1.5 h-1.5 rounded-full mb-0.5 transition-colors"
+                      className="w-1.5 h-1.5 rounded-full mb-0.75 transition-colors"
                       style={{
                         backgroundColor: isActive
                           ? getTierColor(level)
@@ -282,15 +223,13 @@ export default function TierRangeTooltip({
                       src={`${BASE_IMG}${img}.png`}
                       alt={label}
                       title={label}
-                      className="transition-opacity"
+                      className="transition-opacity w-5 h-5 object-contain"
                       style={{
-                        width: 20, height: 20,
-                        objectFit: "contain",
                         opacity: isActive ? 1 : 0.25,
                       }}
-                    // onError={(e) => {
-                    //   (e.target as HTMLImageElement).style.display = "none";
-                    // }}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
                     />
                   </div>
                 );
@@ -298,7 +237,7 @@ export default function TierRangeTooltip({
             </div>
           </div>
 
-          {/* ── 드롭다운 (Radix Select + 티어 이미지) ── */}
+          {/* 드롭다운 (Radix Select + 티어 이미지) */}
           <div className="flex gap-3 items-end mt-4">
             {/* 하한 */}
             <div className="flex-1">
@@ -308,10 +247,7 @@ export default function TierRangeTooltip({
               <Select
                 value={String(minVal)}
                 onValueChange={(v) => commitMin(Number(v))}
-                onOpenChange={(o) => {
-                  if (o) selectOpenRef.current += 1;
-                  else setTimeout(() => { selectOpenRef.current -= 1; }, 0);
-                }}
+                onOpenChange={onSelectOpenChange}
               >
                 <SelectTrigger
                   size="sm"
@@ -346,10 +282,7 @@ export default function TierRangeTooltip({
               <Select
                 value={String(maxVal)}
                 onValueChange={(v) => commitMax(Number(v))}
-                onOpenChange={(o) => {
-                  if (o) selectOpenRef.current += 1;
-                  else setTimeout(() => { selectOpenRef.current -= 1; }, 0);
-                }}
+                onOpenChange={onSelectOpenChange}
               >
                 <SelectTrigger
                   size="sm"

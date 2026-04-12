@@ -11,7 +11,7 @@ export default function OptionHeader() {
       <div className="w-[18%] text-center font-bold">웹훅 이름</div>
       <div className="w-[38%] text-center font-bold">웹훅 URL</div>
       <div className="w-[16%] text-center font-bold">표시될 이름</div>
-      <div className="w-[22%] text-center font-bold">티어 범위</div>
+      <div className="w-[22%] text-center font-bold">난이도 범위</div>
       <div className="w-[6%] text-center font-bold" />
     </div>
   );
