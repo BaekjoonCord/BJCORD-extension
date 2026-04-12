@@ -415,7 +415,7 @@ export async function getWebhookMessage(
             },
             {
               name: "평균 시도",
-              value: `${solved.averageTries} 회`,
+              value: `${Math.round(solved.averageTries * 1000) / 1000} 회`,
               inline: true,
             },
             {
