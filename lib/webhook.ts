@@ -7,6 +7,8 @@ export interface Webhook {
   url: string;
   displayName?: string;
   active: boolean;
+  tierMin?: number; // 0 = Unrated (기본)
+  tierMax?: number; // 31 = Master (기본)
 }
 
 /**
@@ -20,7 +22,9 @@ export interface Webhook {
 export const createWebhook = (
   name: string,
   url: string,
-  displayName?: string
+  displayName?: string,
+  tierMin?: number,
+  tierMax?: number
 ): Webhook => {
   return {
     id: createUUID(),
@@ -28,6 +32,8 @@ export const createWebhook = (
     url,
     displayName,
     active: true,
+    tierMin: tierMin ?? 0,
+    tierMax: tierMax ?? 31,
   };
 };
 

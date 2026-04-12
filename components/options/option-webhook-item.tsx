@@ -1,3 +1,4 @@
+import TierRangeTooltip from "@/components/options/tier-range-tooltip";
 import { Webhook } from "@/lib/webhook";
 import cn from "@yeahx4/cn";
 
@@ -56,8 +57,9 @@ export default function OptionWebhookItem({
         "h-8 bg-[#2c2f33] pl-4 pr-2 rounded-sm min-w-0"
       )}
     >
+      {/* 웹훅 이름 */}
       <div
-        className={cn("w-[20%] hover:cursor-text h-full flex items-center p-1")}
+        className={cn("w-[18%] hover:cursor-text h-full flex items-center p-1")}
       >
         {isEditingName ? (
           <input
@@ -82,8 +84,9 @@ export default function OptionWebhookItem({
         )}
       </div>
 
+      {/* 웹훅 URL */}
       <div
-        className={cn("w-[50%] hover:cursor-text h-full flex items-center p-1")}
+        className={cn("w-[38%] hover:cursor-text h-full flex items-center p-1")}
       >
         {isEditingUrl ? (
           <input
@@ -108,8 +111,9 @@ export default function OptionWebhookItem({
         )}
       </div>
 
+      {/* 표시될 이름 */}
       <div
-        className={cn("w-[25%] hover:cursor-text h-full flex items-center p-1")}
+        className={cn("w-[16%] hover:cursor-text h-full flex items-center p-1")}
       >
         {isEditingDisplayName ? (
           <input
@@ -137,9 +141,18 @@ export default function OptionWebhookItem({
         )}
       </div>
 
+      {/* 티어 범위 - 오버레이 팝오버 트리거 */}
+      <div className="w-[22%] h-full flex items-center px-1">
+        <TierRangeTooltip
+          webhook={webhook}
+          handleUpdateWebhook={handleUpdateWebhook}
+        />
+      </div>
+
+      {/* 삭제 버튼 */}
       <div
         className={cn(
-          "bg-red-500 text-white w-[5%] transition-all",
+          "bg-red-500 text-white w-[6%] transition-all",
           "cursor-pointer text-center rounded-sm hover:bg-red-600"
         )}
         onClick={() => handleDeleteWebhook(webhook.id)}
