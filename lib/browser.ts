@@ -197,18 +197,18 @@ export const syncTierSelector = async (start: number, end: number) => {
  * @returns 확장 프로그램이 처음 실행되는지 여부
  */
 export const isFirstRun = async (): Promise<boolean> => {
-  const webhooks = await browser.storage.sync.get(WEBHOOK_KEY);
-  const shouldShowEmoji = await browser.storage.sync.get(SHOW_EMOJI_KEY);
-  const sendFirstAcOnly = await browser.storage.sync.get(
-    SEND_FIRST_AC_ONLY_KEY
-  );
-  const tierSelector = await browser.storage.sync.get(TIER_SELECTOR_KEY);
+  const storage = await browser.storage.sync.get([
+    WEBHOOK_KEY,
+    SHOW_EMOJI_KEY,
+    SEND_FIRST_AC_ONLY_KEY,
+    TIER_SELECTOR_KEY,
+  ]);
 
   return (
-    webhooks[WEBHOOK_KEY] === undefined ||
-    shouldShowEmoji[SHOW_EMOJI_KEY] === undefined ||
-    sendFirstAcOnly[SEND_FIRST_AC_ONLY_KEY] === undefined ||
-    tierSelector[TIER_SELECTOR_KEY] === undefined
+    storage[WEBHOOK_KEY] === undefined ||
+    storage[SHOW_EMOJI_KEY] === undefined ||
+    storage[SEND_FIRST_AC_ONLY_KEY] === undefined ||
+    storage[TIER_SELECTOR_KEY] === undefined
   );
 };
 
@@ -219,18 +219,25 @@ export const isFirstRun = async (): Promise<boolean> => {
  * undefined인 경우, 기존 값은 유지하되 누락된 값만 기본값으로 초기화합니다.
  */
 export const initStorage = async () => {
-  if ((await browser.storage.sync.get(WEBHOOK_KEY)) === undefined)
+  const storage = await browser.storage.sync.get([
+    WEBHOOK_KEY,
+    SHOW_EMOJI_KEY,
+    SEND_FIRST_AC_ONLY_KEY,
+    TIER_SELECTOR_KEY,
+  ]);
+
+  if (storage[WEBHOOK_KEY] === undefined)
     await browser.storage.sync.set({ [WEBHOOK_KEY]: [] });
 
-  if ((await browser.storage.sync.get(SHOW_EMOJI_KEY)) === undefined)
+  if (storage[SHOW_EMOJI_KEY] === undefined)
     await browser.storage.sync.set({ [SHOW_EMOJI_KEY]: DEFAULT_SHOW_EMOJI });
 
-  if ((await browser.storage.sync.get(SEND_FIRST_AC_ONLY_KEY)) === undefined)
+  if (storage[SEND_FIRST_AC_ONLY_KEY] === undefined)
     await browser.storage.sync.set({
       [SEND_FIRST_AC_ONLY_KEY]: DEFAULT_SEND_FIRST_AC_ONLY,
     });
-    
-  if ((await browser.storage.sync.get(TIER_SELECTOR_KEY)) === undefined)
+
+  if (storage[TIER_SELECTOR_KEY] === undefined)
     await browser.storage.sync.set({
       [TIER_SELECTOR_KEY]: {
         start: DEFAULT_TIER_SELECTOR_START,

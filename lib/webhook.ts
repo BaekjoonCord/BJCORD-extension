@@ -33,7 +33,7 @@ export const createWebhook = (
     displayName,
     active: true,
     tierMin: tierMin ?? 0,
-    tierMax: tierMax ?? 31,
+    tierMax: tierMax ?? 30,
   };
 };
 

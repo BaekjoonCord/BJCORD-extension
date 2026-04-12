@@ -21,6 +21,7 @@ import {
   TIER_MARKERS,
 } from "@/lib/tier";
 import { useClickOutside } from "@/hooks/use-click-outside";
+import { syncTierSelector } from "@/lib/browser";
 
 /** 티어 이미지 + 이름을 함께 표시하는 셀렉트 아이템 row */
 function TierRow({ level }: { level: number }) {
@@ -98,11 +99,13 @@ export default function TierRangeTooltip({
     const v = Math.min(val, maxVal);
     setMinVal(v);
     handleUpdateWebhook(webhook.id, { tierMin: v });
+    syncTierSelector(v, maxVal);
   };
   const commitMax = (val: number) => {
     const v = Math.max(val, minVal);
     setMaxVal(v);
     handleUpdateWebhook(webhook.id, { tierMax: v });
+    syncTierSelector(minVal, v);
   };
   const handleMinDrag = (val: number) => setMinVal(Math.min(val, maxVal));
   const handleMaxDrag = (val: number) => setMaxVal(Math.max(val, minVal));

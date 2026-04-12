@@ -2,7 +2,7 @@ import OptionHeader from "@/components/options/option-header";
 import OptionInputField from "@/components/options/option-input-field";
 import OptionWebhookItem from "@/components/options/option-webhook-item";
 import PopupTitle from "@/components/popup/title";
-import { getWebhooks, initStorage } from "@/lib/browser";
+import { getTierSelector, getWebhooks, initStorage } from "@/lib/browser";
 import {
   addWebhook,
   createWebhook,
@@ -27,7 +27,14 @@ function App() {
 
   const handleAddWebhook = async () => {
     if (!nameInput || !urlInput) return;
-    const newWebhook = createWebhook(nameInput, urlInput, displayNameInput);
+    const { start, end } = await getTierSelector();
+    const newWebhook = createWebhook(
+      nameInput,
+      urlInput,
+      displayNameInput,
+      start,
+      end
+    );
     setWebhooks((prev) => [...prev, newWebhook]);
     setNameInput("");
     setUrlInput("");
