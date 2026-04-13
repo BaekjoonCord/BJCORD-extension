@@ -24,8 +24,36 @@ import { useClickOutside } from "@/hooks/use-click-outside";
 const TIER_MIN = DEFAULT_TIER_SELECTION_START;
 const TIER_MAX = DEFAULT_TIER_SELECTION_END;
 const TIER_RANGE = TIER_MAX - TIER_MIN;
+const TIER_SHORT_PREFIX: Record<string, string> = {
+  Bronze: "B",
+  Silver: "S",
+  Gold: "G",
+  Platinum: "P",
+  Diamond: "D",
+  Ruby: "R",
+  Master: "M",
+};
 
-function TierChip({
+function getTierShortLabel(level: number) {
+  if (level === 0) return "Un";
+
+  const tierName = TIER_NAME[level];
+  if (!tierName) return String(level);
+  if (tierName === "Master") return "M";
+
+  const [tier, roman] = tierName.split(" ");
+  const romanToNum: Record<string, string> = {
+    I: "1",
+    II: "2",
+    III: "3",
+    IV: "4",
+    V: "5",
+  };
+
+  return `${TIER_SHORT_PREFIX[tier] ?? tier}${romanToNum[roman] ?? roman}`;
+}
+
+function TierIcon({
   level,
   className,
 }: {
@@ -50,6 +78,32 @@ function TierChip({
           (e.target as HTMLImageElement).style.display = "none";
         }}
       />
+    </div>
+  );
+}
+
+function TierChip({
+  level,
+  className,
+}: {
+  level: number;
+  className?: string;
+}) {
+  const color = getTierColor(level);
+
+  return (
+    <div
+      className={cn(
+        "flex h-6 items-center justify-center rounded-full border pl-1.5 pr-2",
+        className
+      )}
+      style={{ color, borderColor: color }}
+      title={TIER_NAME[level]}
+    >
+      <TierIcon level={level} />
+      <p className="text-sm font-bold leading-none">
+        {getTierShortLabel(level)}
+      </p>
     </div>
   );
 }
@@ -168,10 +222,10 @@ export default function TierRangeTooltip({
         )}
       >
         <span className="flex min-w-0 items-center gap-1.5">
-          {includeUnrated ? <TierChip level={0} className="h-5" /> : null}
-          <TierChip level={minVal} className="h-5" />
+          {includeUnrated ? <TierIcon level={0} className="h-5" /> : null}
+          <TierIcon level={minVal} className="h-5" />
           <span className="text-gray-500">~</span>
-          <TierChip level={maxVal} className="h-5" />
+          <TierIcon level={maxVal} className="h-5" />
         </span>
       </button>
 
