@@ -4,9 +4,6 @@ import {
   SEND_FIRST_AC_ONLY_KEY,
   SHOW_EMOJI_KEY,
   WEBHOOK_KEY,
-
-  DEFAULT_TIER_SELECTOR_START,
-  DEFAULT_TIER_SELECTOR_END,
 } from "./constants";
 import { createUUID } from "./util";
 import { Webhook } from "./webhook";

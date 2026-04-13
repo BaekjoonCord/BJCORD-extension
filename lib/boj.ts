@@ -19,6 +19,8 @@ import {
   SUBMISSION_TIME_QUERY,
   TIER_NAME,
   WATCH_JUDGEMENT_INTERVAL,
+  DEFAULT_TIER_SELECTION_END,
+  DEFAULT_TIER_SELECTION_START,
 } from "./constants";
 import { Logger } from "./logger";
 
@@ -540,8 +542,11 @@ export async function watchJudgementChange(
       const webhooks = (await getWebhooks()).filter((wh) => {
         if (!wh.active) return false;
         const level = webhookData.level;
-        const min = wh.tierMin ?? 0;
-        const max = wh.tierMax ?? 30;
+        const includeUnrated = wh.includeUnrated ?? wh.tierMin === 0;
+        const min = wh.tierMin ?? DEFAULT_TIER_SELECTION_START;
+        const max = wh.tierMax ?? DEFAULT_TIER_SELECTION_END;
+
+        if (level === 0) return includeUnrated;
         return level >= min && level <= max;
       });
       let success = 0;

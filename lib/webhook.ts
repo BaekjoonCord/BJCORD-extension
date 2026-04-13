@@ -1,3 +1,7 @@
+import {
+  DEFAULT_TIER_SELECTION_END,
+  DEFAULT_TIER_SELECTION_START,
+} from "./constants";
 import { getWebhooks, syncWebhooks } from "./browser";
 import { createUUID } from "./util";
 
@@ -7,8 +11,9 @@ export interface Webhook {
   url: string;
   displayName?: string;
   active: boolean;
-  tierMin?: number; // 0 = Unrated (기본)
-  tierMax?: number; // 31 = Master (기본)
+  tierMin?: number;
+  tierMax?: number;
+  includeUnrated?: boolean;
 }
 
 /**
@@ -24,7 +29,8 @@ export const createWebhook = (
   url: string,
   displayName?: string,
   tierMin?: number,
-  tierMax?: number
+  tierMax?: number,
+  includeUnrated = true
 ): Webhook => {
   return {
     id: createUUID(),
@@ -32,8 +38,9 @@ export const createWebhook = (
     url,
     displayName,
     active: true,
-    tierMin: tierMin ?? 0,
-    tierMax: tierMax ?? 30,
+    tierMin: tierMin ?? DEFAULT_TIER_SELECTION_START,
+    tierMax: tierMax ?? DEFAULT_TIER_SELECTION_END,
+    includeUnrated,
   };
 };
 
