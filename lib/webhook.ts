@@ -1,3 +1,7 @@
+import {
+  DEFAULT_TIER_SELECTION_END,
+  DEFAULT_TIER_SELECTION_START,
+} from "./constants";
 import { getWebhooks, syncWebhooks } from "./browser";
 import { createUUID } from "./util";
 
@@ -7,6 +11,9 @@ export interface Webhook {
   url: string;
   displayName?: string;
   active: boolean;
+  tierMin?: number;
+  tierMax?: number;
+  includeUnrated?: boolean;
 }
 
 /**
@@ -20,7 +27,10 @@ export interface Webhook {
 export const createWebhook = (
   name: string,
   url: string,
-  displayName?: string
+  displayName?: string,
+  tierMin?: number,
+  tierMax?: number,
+  includeUnrated = true
 ): Webhook => {
   return {
     id: createUUID(),
@@ -28,6 +38,9 @@ export const createWebhook = (
     url,
     displayName,
     active: true,
+    tierMin: tierMin ?? DEFAULT_TIER_SELECTION_START,
+    tierMax: tierMax ?? DEFAULT_TIER_SELECTION_END,
+    includeUnrated,
   };
 };
 

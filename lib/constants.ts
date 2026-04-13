@@ -7,8 +7,13 @@ export const CHROME_STORE_URL =
 export const WEBHOOK_KEY = "webhooks";
 export const SHOW_EMOJI_KEY = "showEmoji";
 export const SEND_FIRST_AC_ONLY_KEY = "webhookFirstAcceptOnly";
+
 export const DEFAULT_SHOW_EMOJI = true;
 export const DEFAULT_SEND_FIRST_AC_ONLY = false;
+export const DEFAULT_TIER_SELECTION_START = 1; // Bronze V
+export const DEFAULT_TIER_SELECTION_END = 30; // Ruby I
+export const DEFAULT_TIER_SELECTOR_START = DEFAULT_TIER_SELECTION_START;
+export const DEFAULT_TIER_SELECTOR_END = DEFAULT_TIER_SELECTION_END;
 
 export const HANDLE_QUERY = "a.username";
 export const AC_TITLE_TOOLTIP_QUERY = "a.problem_title.tooltip-click.result-ac";
