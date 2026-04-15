@@ -2,7 +2,11 @@ import OptionHeader from "@/components/options/option-header";
 import OptionInputField from "@/components/options/option-input-field";
 import OptionWebhookItem from "@/components/options/option-webhook-item";
 import PopupTitle from "@/components/popup/title";
-import { getWebhooks, initStorage } from "@/lib/browser";
+import {getWebhooks, initStorage } from "@/lib/browser";
+import {
+  DEFAULT_TIER_SELECTION_END,
+  DEFAULT_TIER_SELECTION_START,
+} from "@/lib/constants";
 import {
   addWebhook,
   createWebhook,
@@ -17,6 +21,9 @@ function App() {
   const [nameInput, setNameInput] = useState("");
   const [urlInput, setUrlInput] = useState("");
   const [displayNameInput, setDisplayNameInput] = useState("");
+  const [tierMinInput, setTierMinInput] = useState(DEFAULT_TIER_SELECTION_START);
+  const [tierMaxInput, setTierMaxInput] = useState(DEFAULT_TIER_SELECTION_END);
+  const [includeUnratedInput, setIncludeUnratedInput] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -27,11 +34,21 @@ function App() {
 
   const handleAddWebhook = async () => {
     if (!nameInput || !urlInput) return;
-    const newWebhook = createWebhook(nameInput, urlInput, displayNameInput);
+    const newWebhook = createWebhook(
+      nameInput,
+      urlInput,
+      displayNameInput,
+      tierMinInput,
+      tierMaxInput,
+      includeUnratedInput
+    );
     setWebhooks((prev) => [...prev, newWebhook]);
     setNameInput("");
     setUrlInput("");
     setDisplayNameInput("");
+    setTierMinInput(DEFAULT_TIER_SELECTION_START);
+    setTierMaxInput(DEFAULT_TIER_SELECTION_END);
+    setIncludeUnratedInput(true);
 
     await addWebhook(newWebhook);
   };
@@ -83,9 +100,13 @@ function App() {
             setUrlInput={setUrlInput}
             displayNameInput={displayNameInput}
             setDisplayNameInput={setDisplayNameInput}
+            tierMinInput={tierMinInput}
+            setTierMinInput={setTierMinInput}
+            tierMaxInput={tierMaxInput}
+            setTierMaxInput={setTierMaxInput}
+            includeUnratedInput={includeUnratedInput}
+            setIncludeUnratedInput={setIncludeUnratedInput}
             handleAddWebhook={handleAddWebhook}
-            handleDeleteWebhook={handleDeleteWebhook}
-            handleUpdateWebhook={handleUpdateWebhook}
           />
         </div>
       </div>

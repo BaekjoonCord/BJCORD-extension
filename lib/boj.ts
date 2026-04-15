@@ -19,6 +19,8 @@ import {
   SUBMISSION_TIME_QUERY,
   TIER_NAME,
   WATCH_JUDGEMENT_INTERVAL,
+  DEFAULT_TIER_SELECTION_END,
+  DEFAULT_TIER_SELECTION_START,
 } from "./constants";
 import { Logger } from "./logger";
 
@@ -374,69 +376,71 @@ export async function getWebhookMessage(
 
   const tier = getProblemTier(solved);
 
-  return (displayName: string | undefined) => ({
-    content: null,
-    embeds: [
-      {
-        title: `[${tier}] ${problemId}번: ${solved.titleKo}`,
-        url: `https://www.acmicpc.net/problem/${problemId}`,
-        description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n${
-          solved.tags.length > 0
-            ? `태그: ||${solved.tags.map(getTagName).join(", ")}||`
-            : ""
-        }`,
-        color: getColor(tier.split(" ")[0].toLowerCase()),
-        fields: [
-          {
-            name: "성능",
-            value: `${memory} KB / ${runtime} ms`,
-            inline: true,
+  return {
+    level: solved.level,
+    buildMessage: (displayName: string | undefined) => ({
+      content: null,
+      embeds: [
+        {
+          title: `[${tier}] ${problemId}번: ${solved.titleKo}`,
+          url: `https://www.acmicpc.net/problem/${problemId}`,
+          description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n${solved.tags.length > 0
+              ? `태그: ||${solved.tags.map(getTagName).join(", ")}||`
+              : ""
+            }`,
+          color: getColor(tier.split(" ")[0].toLowerCase()),
+          fields: [
+            {
+              name: "성능",
+              value: `${memory} KB / ${runtime} ms`,
+              inline: true,
+            },
+            {
+              name: "언어",
+              value: language || "?",
+              inline: true,
+            },
+            {
+              name: "시도한 횟수",
+              value: `${attempts} 회`,
+              inline: true,
+            },
+            {
+              name: "제출 일자",
+              value: `${timestamp}`,
+              inline: true,
+            },
+            {
+              name: "코드 길이",
+              value: length ? `${length} B` : "?",
+              inline: true,
+            },
+            {
+              name: "평균 시도",
+              value: `${Math.round(solved.averageTries * 1000) / 1000} 회`,
+              inline: true,
+            },
+            {
+              name: "맞은 사람",
+              value: `${solved.acceptedUserCount} 명`,
+              inline: true,
+            },
+          ],
+          author: {
+            name: `${displayName || handle}`,
+            url: `https://solved.ac/profile/${handle}`,
           },
-          {
-            name: "언어",
-            value: language || "?",
-            inline: true,
+          thumbnail: {
+            url: getLevelImg(tier),
           },
-          {
-            name: "시도한 횟수",
-            value: `${attempts} 회`,
-            inline: true,
-          },
-          {
-            name: "제출 일자",
-            value: `${timestamp}`,
-            inline: true,
-          },
-          {
-            name: "코드 길이",
-            value: length ? `${length} B` : "?",
-            inline: true,
-          },
-          {
-            name: "평균 시도",
-            value: `${Math.round(solved.averageTries * 1000) / 1000} 회`,
-            inline: true,
-          },
-          {
-            name: "맞은 사람",
-            value: `${solved.acceptedUserCount} 명`,
-            inline: true,
-          },
-        ],
-        author: {
-          name: `${displayName || handle}`,
-          url: `https://solved.ac/profile/${handle}`,
         },
-        thumbnail: {
-          url: getLevelImg(tier),
-        },
-      },
-    ],
-    username: "BJCORD",
-    avatar_url:
-      "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/thumbnail.png",
-    attachments: [],
-  });
+      ],
+      username: "BJCORD",
+      avatar_url:
+        "https://cdn.jsdelivr.net/gh/5tarlight/vlog-image@main/bjcord/thumbnail.png",
+      attachments: [],
+    }),
+  };
 }
 
 /**
@@ -521,7 +525,7 @@ export async function watchJudgementChange(
     logger.log(`Sending webhook...`);
 
     (async () => {
-      const msg = await getWebhookMessage(
+      const webhookData = await getWebhookMessage(
         latest.username,
         latest.submissionId,
         latest.problemId,
@@ -535,12 +539,21 @@ export async function watchJudgementChange(
         attempts
       );
 
-      const webhooks = (await getWebhooks()).filter((wh) => wh.active);
+      const webhooks = (await getWebhooks()).filter((wh) => {
+        if (!wh.active) return false;
+        const level = webhookData.level;
+        const includeUnrated = wh.includeUnrated ?? wh.tierMin === 0;
+        const min = wh.tierMin ?? DEFAULT_TIER_SELECTION_START;
+        const max = wh.tierMax ?? DEFAULT_TIER_SELECTION_END;
+
+        if (level === 0) return includeUnrated;
+        return level >= min && level <= max;
+      });
       let success = 0;
       let failure = 0;
       for (const webhook of webhooks) {
         try {
-          await sendMessage(msg(webhook.displayName), webhook.url);
+          await sendMessage(webhookData.buildMessage(webhook.displayName), webhook.url);
           success++;
         } catch (e) {
           logger.error(e);
