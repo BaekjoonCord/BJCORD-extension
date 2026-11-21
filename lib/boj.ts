@@ -383,8 +383,8 @@ export async function getWebhookMessage(
       embeds: [
         {
           title: `[${tier}] ${problemId}번: ${solved.titleKo}`,
-          url: `https://www.acmicpc.net/problem/${problemId}`,
-          description: `[코드 보기](https://www.acmicpc.net/source/${submissionId})\n${solved.tags.length > 0
+          url: `https://acmicpc.net/problem/${problemId}`,
+          description: `[코드 보기](https://acmicpc.net/source/${submissionId})\n${solved.tags.length > 0
               ? `태그: ||${solved.tags.map(getTagName).join(", ")}||`
               : ""
             }`,
