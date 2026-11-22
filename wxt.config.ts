@@ -23,7 +23,9 @@ export default defineConfig({
     host_permissions: [
       "https://acmicpc.net/*",
       "https://www.acmicpc.net/*",
-      "https://solved.ac/api/v3/*",
+      "https://solved.ac/api/v4/*",
+      "https://discord.com/api/webhooks/*",
+      "https://discordapp.com/api/webhooks/*",
     ],
   }),
   vite: () => ({

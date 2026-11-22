@@ -4,7 +4,7 @@ import {
   DEFAULT_TIER_SELECTION_START,
   TIER_NAME,
 } from "@/lib/constants";
-import { Webhook } from "@/lib/webhook";
+import { includesUnrated, type Webhook } from "@/lib/webhook";
 import {
   Select,
   SelectContent,
@@ -142,7 +142,7 @@ export default function TierRangeTooltip({
   );
   const [maxVal, setMaxVal] = useState(webhook.tierMax ?? TIER_MAX);
   const [includeUnrated, setIncludeUnrated] = useState(
-    webhook.includeUnrated ?? webhook.tierMin === 0
+    includesUnrated(webhook)
   );
   const [popupStyle, setPopupStyle] = useState<CSSProperties>({});
 
@@ -152,8 +152,8 @@ export default function TierRangeTooltip({
   useEffect(() => {
     setMinVal(Math.max(webhook.tierMin ?? TIER_MIN, TIER_MIN));
     setMaxVal(webhook.tierMax ?? TIER_MAX);
-    setIncludeUnrated(webhook.includeUnrated ?? webhook.tierMin === 0);
-  }, [webhook.tierMin, webhook.tierMax]);
+    setIncludeUnrated(includesUnrated(webhook));
+  }, [webhook.tierMin, webhook.tierMax, webhook.includeUnrated]);
 
   const calcPopupStyle = (): CSSProperties => {
     if (!triggerRef.current) return {};

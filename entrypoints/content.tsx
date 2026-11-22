@@ -2,31 +2,21 @@ import { getHandle, watchJudgementChange } from "@/lib/boj";
 import { getLogger } from "@/lib/logger";
 
 export default defineContentScript({
-  matches: ["https://acmicpc.net/*", "https://www.acmicpc.net/*"],
+  matches: ["https://acmicpc.net/status*", "https://www.acmicpc.net/status*"],
   async main(ctx) {
-    const logger = getLogger("content");
-
-    const url = location.href;
-    logger.log("URL:", url);
-
     const handle = getHandle();
-    if (!handle) {
-      logger.log("No handle found, aborted.");
-      return;
-    }
-
-    logger.log("Handle:", handle);
-
+    const { pathname, searchParams } = new URL(location.href);
+    const problemId = searchParams.get("problem_id");
     if (
-      ["status", `user_id=${handle}`, "problem_id", "from_mine=1"].every(
-        (key) => url.includes(key)
-      )
-    ) {
-      // Main Content Script
-      logger.log("Starting...");
-      await watchJudgementChange(ctx, logger);
-    } else {
-      logger.log("Not in the status page, aborted.");
-    }
+      pathname !== "/status" ||
+      !handle ||
+      searchParams.get("user_id") !== handle ||
+      searchParams.get("from_mine") !== "1" ||
+      !problemId ||
+      !/^[1-9]\d*$/.test(problemId)
+    )
+      return;
+
+    await watchJudgementChange(ctx, getLogger("content"), handle, problemId);
   },
 });

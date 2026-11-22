@@ -1,27 +1,42 @@
+import { deliverSubmission, type DeliveryResult } from "@/lib/submission";
+
 export default defineBackground(() => {
-  async function getProblemData(id: string) {
-    const res = await fetch(
-      `https://solved.ac/api/v3/problem/show?problemId=${id}`
-    );
+  const deliveries = new Map<string, Promise<DeliveryResult>>();
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch problem data");
+  browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request?.task !== "acceptedSubmission" || !sender.url || !sender.tab)
+      return;
+    const url = new URL(sender.url);
+    const row = request.submission;
+    if (
+      !["https://acmicpc.net", "https://www.acmicpc.net"].includes(
+        url.origin
+      ) ||
+      url.pathname !== "/status" ||
+      url.searchParams.get("from_mine") !== "1" ||
+      !row ||
+      !/^[1-9]\d*$/.test(row.submissionId) ||
+      !/^[1-9]\d*$/.test(row.problemId) ||
+      url.searchParams.get("user_id") !== row.username ||
+      url.searchParams.get("problem_id") !== row.problemId
+    )
+      return;
+
+    // Reloads and multiple tabs can see the same freshly accepted submission.
+    let delivery = deliveries.get(row.submissionId);
+    if (!delivery) {
+      delivery = deliverSubmission(row, request.attempts).catch(() => ({
+        sent: 0,
+        failed: 1,
+        unknownTierSkipped: 0,
+      }));
+      deliveries.set(row.submissionId, delivery);
+      delivery.then((result) => {
+        if (!result.sent) deliveries.delete(row.submissionId);
+        else setTimeout(() => deliveries.delete(row.submissionId), 15_000);
+      });
     }
-
-    return await res.json();
-  }
-
-  function handleMessage(
-    request: any,
-    _: Browser.runtime.MessageSender,
-    sendResponse: (response?: any) => void
-  ) {
-    if (request.task == "solvedProblemFetch") {
-      getProblemData(request.problemId).then((res) => sendResponse(res));
-    }
-
+    delivery.then(sendResponse);
     return true;
-  }
-
-  browser.runtime.onMessage.addListener(handleMessage);
+  });
 });

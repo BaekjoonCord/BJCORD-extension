@@ -1,3 +1,4 @@
+import SolvedSettings from "@/components/options/solved-settings";
 import OptionHeader from "@/components/options/option-header";
 import OptionInputField from "@/components/options/option-input-field";
 import OptionWebhookItem from "@/components/options/option-webhook-item";
@@ -77,7 +78,7 @@ function App() {
       <div
         className={cn(
           "max-w-4xl w-full flex flex-col bg-[#424549]",
-          "h-[568px] rounded-md justify-between p-6"
+          "min-h-[568px] rounded-md justify-between gap-6 p-6"
         )}
       >
         <div className="flex flex-col gap-2">
@@ -108,6 +109,7 @@ function App() {
             setIncludeUnratedInput={setIncludeUnratedInput}
             handleAddWebhook={handleAddWebhook}
           />
+          <SolvedSettings />
         </div>
       </div>
     </div>

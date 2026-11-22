@@ -16,6 +16,11 @@ export interface Webhook {
   includeUnrated?: boolean;
 }
 
+export function includesUnrated(webhook: Webhook) {
+  // Webhooks saved before tier filters existed received all submissions.
+  return webhook.includeUnrated ?? (webhook.tierMin === 0 || (webhook.tierMin === undefined && webhook.tierMax === undefined));
+}
+
 /**
  * 새로운 웹훅 객체를 생성합니다.
  *
